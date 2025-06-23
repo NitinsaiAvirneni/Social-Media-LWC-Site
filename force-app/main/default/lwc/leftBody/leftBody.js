@@ -33,4 +33,6 @@ export default class LeftBody extends LightningElement {
             status: ['green', 'green', 'green', 'green']
         }
     ];
+
+    // reconfigure the stores data to include a new store by getting the data from the apex or salefroce 
 }

@@ -1,0 +1,31 @@
+.filter-container {
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.search-box {
+    margin-bottom: 16px;
+}
+
+lightning-combobox {
+    margin-bottom: 16px;
+}
+
+.filter-btn {
+    width: 100%;
+    margin: 16px 0;
+}
+
+.info-text {
+    font-size: 0.9rem;
+    color: #333;
+    margin: 0.5rem 0;
+}
+
+.load-more {
+    text-align: center;
+    margin-top: 16px;
+}

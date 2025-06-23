@@ -9,7 +9,7 @@
         </div>
 
         <!-- Branches with scrolling -->
-        <div style="max-height: 220px; overflow-y: auto; margin-bottom: 1rem;">
+        <div style="max-height: 320px; overflow-y: auto; margin-bottom: 4px;">
             <template for:each={stores} for:item="store">
                 <div key={store.id} class="store-card {store.highlight ? 'selected' : ''}">
                     <div class="title">{store.name}</div>
@@ -32,12 +32,13 @@
         <div class="activity">
             <h3>Today's Activity</h3>
             <ul>
-                <li>New Reviews <span class="value red">3</span></li>
-                <li>New Posts <span class="value red">5</span></li>
+               <li>New Reviews <span style="color: blue;">3</span></li>  <!--   ////here later use dynamic values from js and css dynmacial  -->
+                <li>New Posts <span style="color: red">5</span></li>
                 <li>Pending Responses <span class="value pink">8</span></li>
                 <li>High Potential Leads <span class="value violet">4</span></li>
                 <li>Converted Today <span class="value green">2</span></li>
             </ul>
         </div>
+        <!-- here get values from js -->
     </div>
 </template>
