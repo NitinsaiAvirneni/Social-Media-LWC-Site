@@ -43,14 +43,38 @@
             <c-left-body></c-left-body>
         </div>
         <!-- Right Body Bar with Filter Button -->
-        <div class="slds-col slds-size_3-of-4" style="background: rgba(255,255,255,0.92); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
-            <button onclick={toggleRightBody} class="slds-button slds-button_neutral">
-                Filter
-            </button>
+        <div class="slds-col slds-size_3-of-4" style="background: rgba(65, 65, 225, 0.92); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <!-- Platform suggestion buttons -->
+                <div style="display: flex; gap: 10px;">
+                    <button class="slds-button slds-button_neutral" title="Facebook">
+                        <lightning-icon icon-name="utility:like" alternative-text="Facebook" size="x-small" style="margin-right: 4px;"></lightning-icon>
+                        Facebook
+                    </button>
+                    <button class="slds-button slds-button_neutral" title="Twitter">
+                        <lightning-icon icon-name="utility:share" alternative-text="Twitter" size="x-small" style="margin-right: 4px;"></lightning-icon>
+                        Twitter
+                    </button>
+                    <button class="slds-button slds-button_neutral" title="YouTube">
+                        <lightning-icon icon-name="utility:video" alternative-text="YouTube" size="x-small" style="margin-right: 4px;"></lightning-icon>
+                        YouTube
+                    </button>
+                    <button class="slds-button slds-button_neutral" title="Google">
+                        <lightning-icon icon-name="utility:search" alternative-text="Google" size="x-small" style="margin-right: 4px;"></lightning-icon>
+                        Google
+                    </button>
+                    <button class="slds-button slds-button_neutral" title="Instagram">
+                        <lightning-icon icon-name="utility:photo" alternative-text="Instagram" size="x-small" style="margin-right: 4px;"></lightning-icon>
+                        Instagram
+                    </button>
+                </div>
+                <!-- Filter button -->
+                <button onclick={toggleRightBody} class="slds-button slds-button_neutral">
+                    Filter
+                </button>
             </div>
             <template if:true={showRightBody}>
-            <c-right-body></c-right-body>
+                <c-right-body></c-right-body>
             </template>
         </div>
     </div>
