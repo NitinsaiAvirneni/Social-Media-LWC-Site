@@ -1,0 +1,43 @@
+<template>
+    <div class="card">
+        <h2>Account Hierarchy</h2>
+
+        <!-- Parent Store -->
+        <div class="parent-store selected">
+            <div class="title">Apple Stores (Parent)</div>
+            <div class="subtext">3 active branches</div>
+        </div>
+
+        <!-- Branches with scrolling -->
+        <div style="max-height: 220px; overflow-y: auto; margin-bottom: 1rem;">
+            <template for:each={stores} for:item="store">
+                <div key={store.id} class="store-card {store.highlight ? 'selected' : ''}">
+                    <div class="title">{store.name}</div>
+                    <div class="details">
+                        <p>📍 {store.reviews} reviews</p>
+                        <p>📘 {store.followers} followers</p>
+                        <p>📰 {store.posts} posts</p>
+                        <p>🐦 {store.tweets} tweets</p>
+                    </div>
+                    <div class="status-indicators">
+                        <template for:each={store.status} for:item="dot">
+                            <span key={dot} class="dot {dot}"></span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Today's Activity -->
+        <div class="activity">
+            <h3>Today's Activity</h3>
+            <ul>
+                <li>New Reviews <span class="value red">3</span></li>
+                <li>New Posts <span class="value red">5</span></li>
+                <li>Pending Responses <span class="value pink">8</span></li>
+                <li>High Potential Leads <span class="value violet">4</span></li>
+                <li>Converted Today <span class="value green">2</span></li>
+            </ul>
+        </div>
+    </div>
+</template>

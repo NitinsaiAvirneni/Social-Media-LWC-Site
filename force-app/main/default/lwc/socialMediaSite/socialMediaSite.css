@@ -1,0 +1,39 @@
+/* header color used here  */
+.headerDesigncolor {
+    background: linear-gradient(90deg, #4F8EF7 0%, #6FC3DF 100%);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(79, 142, 247, 0.15);
+    padding: 15px 50px;;
+    margin-bottom: 32px;
+}
+
+/* header title */
+.headerTitle {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+}
+/* action items css */
+
+.actionButtonAnalytics {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.13);
+    border-radius: 8px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.actionButtonSchedule {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.13);
+    border-radius: 8px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+/* Action items css DND */
