@@ -13,6 +13,9 @@ testSchedule(){
     console.log('Social Media Site Test Schedule');
 }
 
+showRightBody = false;
 // this is a test function to check the schedule of the social media site
-
+toggleRightBody() {
+    this.showRightBody = !this.showRightBody;
+}
 }
