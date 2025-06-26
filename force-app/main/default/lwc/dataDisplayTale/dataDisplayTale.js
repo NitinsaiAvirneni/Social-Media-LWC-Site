@@ -1,6 +1,9 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, api } from 'lwc';
 
 export default class DataDisplayTale extends LightningElement {
+    @api selectedPlatform ;
+
+
     fakeData = [
         {
             id: '1',
@@ -86,36 +89,27 @@ export default class DataDisplayTale extends LightningElement {
     ];
 
 
-    // @track filter = {
-    //     sentiment: '',
-    //     source: ''
-    // };
-
-    // get sentiments() {
-    //     return [
-    //         { label: 'All', value: '' },
-    //         { label: 'Positive', value: 'positive' },
-    //         { label: 'Neutral', value: 'neutral' },
-    //         { label: 'Negative', value: 'negative' }
-    //     ];
-    // }
-
-    // get sources() {
-    //     const uniqueSources = [...new Set(this.fakeData.map(item => item.source))];
-    //     return [{ label: 'All', value: '' }, ...uniqueSources.map(src => ({ label: src, value: src }))];
-    // }
-
-    // handleFilterChange(event) {
-    //     const { name, value } = event.target;
-    //     this.filter = { ...this.filter, [name]: value };
-    // }
 
     // get filteredData() {
-    //     return this.fakeData.filter(item => {
-    //         const sentimentMatch = this.filter.sentiment ? item.sentiment === this.filter.sentiment : true;
-    //         const sourceMatch = this.filter.source ? item.source === this.filter.source : true;
-    //         return sentimentMatch && sourceMatch;
-    //     });
-    // }
-}
+    //     if (!this.selectedPlatform) {
+    //         console.log('No platform selected, returning all data', this.fakeData);
+    //         return this.fakeData;
+    //     }
+    //     else {
+    //         console.log('Filtering data for platform:', this.selectedPlatform);
+    //     return this.fakeData.filter(item => item.source.includes(this.selectedPlatform));
+    // }   
 
+    // }  
+    
+    get filteredData() {
+        if (!this.selectedPlatform) {
+            console.log('No platform selected, returning all data', this.fakeData);
+            return this.fakeData;
+        }
+        console.log('Filtering data for platform:', this.selectedPlatform);
+        return this.fakeData.filter(item =>
+            item.source.toLowerCase().includes(this.selectedPlatform.toLowerCase())
+        );
+    }
+}

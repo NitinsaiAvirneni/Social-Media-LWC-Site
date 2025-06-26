@@ -1,21 +1,43 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, track } from 'lwc';
 
 export default class SocialMediaSite extends LightningElement {
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
 
+////////////////////Variables for the social media site/////////////////////////////////////////////////////
+    @track selectedPlatform;
+    selectedDate = '';
+    selectedItem = '';
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     testAnalytics() {
         console.log('Social Media Site Test Analytics');
     }
 
-// this is a test function to check the analytics of the social media site
+// this is a test function to check the analytics of the social media site                   ///these are for buttons in the header
 
 
 testSchedule(){
     console.log('Social Media Site Test Schedule');
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 showRightBody = false;
 // this is a test function to check the schedule of the social media site
-toggleRightBody() {
+toggleRightBody() {                                                                                        ////these are  filter button in the header
     this.showRightBody = !this.showRightBody;
 }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////custom event from filter component to left body component//////////////////////////////////////////////////
+handleselectedPlatformChange(event) {
+    this.selectedPlatform = event.detail.value;
+        console.log('Selected platform received from child:', this.selectedPlatform);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 }

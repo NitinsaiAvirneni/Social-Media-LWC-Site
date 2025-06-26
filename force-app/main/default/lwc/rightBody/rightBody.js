@@ -1,7 +1,7 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, track } from 'lwc';
 
 export default class RightBody extends LightningElement {
-      selectedPlatform = '';
+    selectedPlatform = '';
     selectedDate = '';
     selectedItem = '';
     visibleCount = 0;
@@ -28,6 +28,8 @@ export default class RightBody extends LightningElement {
 
     handlePlatformChange(event) {
         this.selectedPlatform = event.detail.value;
+        console.log('Selected Platform:', this.selectedPlatform);
+        this.dispatchEvent(new CustomEvent('platformchange',  {detail: { value: this.selectedPlatform }}));
     }
 
     handleDateChange(event) {

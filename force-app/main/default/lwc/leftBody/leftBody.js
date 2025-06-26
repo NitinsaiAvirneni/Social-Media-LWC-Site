@@ -1,6 +1,13 @@
-import { LightningElement } from 'lwc';
+import { api, LightningElement } from 'lwc';
 
 export default class LeftBody extends LightningElement {
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Variables for the left body component
+   @api selectedPlatform = '';
+    selectedDate = '';
+    selectedItem = '';
+
+
     stores = [
         {
             id: 1,
@@ -34,5 +41,14 @@ export default class LeftBody extends LightningElement {
         }
     ];
 
-    // reconfigure the stores data to include a new store by getting the data from the apex or salefroce 
+////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
+get updateSelectedPlatform() {
+    if(this.selecetedPlatform !== '') {
+     return this.fakedata
+    }
+    else {
+        const fakedata1 = this.fakedata.filter(item => item.source === this.selectedPlatform);
+        return fakedata1;
+    }
+    }
 }

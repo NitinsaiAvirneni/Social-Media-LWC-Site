@@ -1,7 +1,7 @@
 <template>
 
     <!-- ///////////////////////////////// Header////////////////////////////////////////////////////// -->
-     <div style="background-color:rgb(183, 199, 241); height: auto; width: auto;">  
+     <div style="background-color:rgb(255, 255, 255); height: auto; width: auto;">  
         <!-- here is complete background page css above style  -->
     <header class="slds-page-header slds-page-header_object-home custom-header headerDesigncolor">
         <!-- header colour used here @headerDesigncolor -->
@@ -39,11 +39,11 @@
     <!-- ///////////////////////////////////////////////////////////////////BODY////////////////////////////////////////////////////////  -->
     <div class="slds-grid slds-grid_align-spread slds-p-around_large" style="gap: 5px; margin-top: 32px; margin-bottom: 32px; background: rgba(255,255,255,0.07); border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);">
         <!-- Left Body -->
-        <div class="slds-col slds-size_1-of-4" style="background: rgba(245,245,245,0.85); border-radius: 14px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+        <div class="slds-col slds-size_1-of-4" style="background: rgb(79, 142, 247); border-radius: 14px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
             <c-left-body></c-left-body>
         </div>
         <!-- Right Body Bar with Filter Button -->
-        <div class="slds-col slds-size_3-of-4" style="background: rgba(65, 65, 225, 0.92); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+        <div class="slds-col slds-size_3-of-4" style="background: rgb(111, 194, 223); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <!-- Platform suggestion buttons -->
                 <div style="display: flex; gap: 10px;">
@@ -74,10 +74,10 @@
                 </button>
             </div>
             <template if:true={showRightBody}>
-                <c-right-body></c-right-body>
+                <c-right-body onplatformchange={handleselectedPlatformChange}></c-right-body>
             </template>
                 <!-- Data Display Table -->
-            <c-data-display-tale></c-data-display-tale>
+            <c-data-display-tale selected-platform={selectedPlatform}></c-data-display-tale>
             
         </div>
 
