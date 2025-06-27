@@ -1,6 +1,6 @@
 <template>
     <div class="filter-container">
-        <lightning-input type="search" placeholder="Search content, authors, or keywords..." class="search-box"></lightning-input>
+        <lightning-input type="search" placeholder="Search content, authors, or keywords..." class="search-box" onchange={handleSearchbarChange}></lightning-input>
 
         <lightning-combobox
             name="platform"
@@ -29,12 +29,9 @@
             onchange={handleItemChange}>
         </lightning-combobox>
 
-        <lightning-button variant="brand" label="Filters" icon-name="utility:filterList" class="filter-btn"></lightning-button>
+        <lightning-button variant="brand" label="Filters" icon-name="utility:filterList" class="filter-btn" onclick={applyFilter}></lightning-button>
+        <lightning-button variant="neutral" label="Reset" class="reset-btn" onclick={resetFilters}></lightning-button>
 
-        <p class="info-text">Showing {visibleCount} of {totalCount} items</p>
 
-        <div class="load-more">
-            <lightning-button variant="neutral" label="Load More Items" onclick={loadMore}></lightning-button>
-        </div>
     </div>
 </template>
