@@ -57,10 +57,10 @@ export default class accountHierarchy extends LightningElement {
 
 selectChildAccountId(event) {
     const ChildId = event.currentTarget.dataset.id;
-    const selected = this.childAccounts.find(acc => acc.Id === ChildId);
+    const selected = this.childAccounts.find(acc => String(acc.Id) === String(ChildId));
     if (selected) {
-        console.log('Selected Child Account:', this.childId);
         this.childId = ChildId;
+        console.log('Selected Child Account:', this.childId);
         this.dispatchEvent(new CustomEvent('childaccountselected', {
             detail: {
                 childId: this.childId,
