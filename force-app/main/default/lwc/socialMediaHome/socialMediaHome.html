@@ -40,44 +40,30 @@
     <div class="slds-grid slds-grid_align-spread slds-p-around_large" style="gap: 5px; margin-top: 32px; margin-bottom: 32px; background: rgb(90, 160, 240); border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);">
         <!-- Left Body -->
         <div class="slds-col slds-size_1-of-4" style="background:rgb(111, 194, 223); border-radius: 14px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-            <c-left-body></c-left-body>
+            <c-account-hierarchy></c-account-hierarchy>
         </div>
         <!-- Right Body Bar with Filter Button -->
         <div class="slds-col slds-size_3-of-4" style="background: rgb(111, 194, 223); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <!-- Platform suggestion buttons -->
-                <div style="display: flex; gap: 10px;">
-                    <button class="slds-button slds-button_neutral" title="Facebook" onclick={handlefbClick}>
-                        <lightning-icon icon-name="utility:like" alternative-text="Facebook" size="x-small" style="margin-right: 4px;"></lightning-icon>
-                        Facebook
-                    </button>
-                    <button class="slds-button slds-button_neutral" title="Twitter" onclick={handletwClick}>
-                        <lightning-icon icon-name="utility:share" alternative-text="Twitter" size="x-small" style="margin-right: 4px;"></lightning-icon>
-                        Twitter
-                    </button>
-                    <button class="slds-button slds-button_neutral" title="YouTube" onclick={handleYtClick}>
-                        <lightning-icon icon-name="utility:video" alternative-text="YouTube" size="x-small" style="margin-right: 4px;"></lightning-icon>
-                        YouTube
-                    </button>
-                    <button class="slds-button slds-button_neutral" title="Google" onclick={handlegeClick}>
-                        <lightning-icon icon-name="utility:search" alternative-text="Google" size="x-small" style="margin-right: 4px;"></lightning-icon>
-                        Google
-                    </button>
-                    <button class="slds-button slds-button_neutral" title="Instagram" onclick={handleimClick}>
-                        <lightning-icon icon-name="utility:photo" alternative-text="Instagram" size="x-small" style="margin-right: 4px;"></lightning-icon>
-                        Instagram
-                    </button>
-                </div>
+              
                 <!-- Filter button -->
                 <button onclick={toggleRightBody} class="slds-button slds-button_neutral">
                     Filter
                 </button>
             </div>
             <template if:true={showRightBody}>
-                <c-right-body onfilterchange={handleselectedPlatformChange}></c-right-body>
+                <c-filter-button onfilterchange={handleselectedPlatformChange}></c-filter-button>
             </template>
                 <!-- Data Display Table -->
-            <c-data-display-tale selected-platform={selectedPlatform} selected-date={selectedDate} selected-item={selectedItem} search-term={searchTerm} custombutton-platform={custombuttonPlatform}></c-data-display-tale>
+                  <c-data-table-display 
+                selected-platform={selectedPlatform} 
+                selected-date={selectedDate} 
+                selected-item={selectedItem} 
+                search-term={searchTerm} 
+                custombutton-platform={custombuttonPlatform} 
+                lwc:ref="childRef">
+            </c-data-table-display>
+
             
         </div>
 

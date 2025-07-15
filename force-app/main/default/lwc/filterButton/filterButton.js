@@ -1,6 +1,6 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement ,api} from 'lwc';
 
-export default class RightBody extends LightningElement {
+export default class filterButton extends LightningElement {
     selectedPlatform = '';
     selectedDate = '';
     selectedItem = '';
@@ -30,6 +30,7 @@ export default class RightBody extends LightningElement {
         { label: 'Reviews', value: 'reviews' }
     ];
 
+    @api
     handlePlatformChange(event) {
         this.selectedPlatform = event.detail.value;
          // Apply filter when platform changes

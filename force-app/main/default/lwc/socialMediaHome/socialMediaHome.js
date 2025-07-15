@@ -1,14 +1,14 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement } from 'lwc';
 
-export default class SocialMediaSite extends LightningElement {
+export default class socialMediaHome extends LightningElement {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
 
 ////////////////////Variables for the social media site/////////////////////////////////////////////////////
-    @track selectedPlatform ;
-    @track selectedDate ;
-    @track selectedItem ;
-    @track searchTerm ;
-    @track custombuttonPlatform ;
+    selectedPlatform;
+    selectedDate;
+    selectedItem;
+    searchTerm;
+    custombuttonPlatform;
  
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,24 +47,36 @@ handleselectedPlatformChange(event) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 handlefbClick() {
     this.custombuttonPlatform = 'Facebook';
-    console.log('Facebook button clicked' + this.custombuttonPlatform);
+    console.log('Facebook button clicked ' + this.custombuttonPlatform);
+    handlelcustomfilterClick(); 
 }
  
 handleimClick(){
     this.custombuttonPlatform = 'Instagram';
     console.log('Instagram button clicked'+ this.custombuttonPlatform);
+    this.handlelcustomfilterClick();    
 }
 
 handleYtClick() {
     this.custombuttonPlatform = 'YouTube';
     console.log('YouTube button clicked'    + this.custombuttonPlatform);
+    this.handlelcustomfilterClick();
 }
 handletwClick() {   
     this.custombuttonPlatform = 'Twitter';
     console.log('Twitter button clicked' + this.custombuttonPlatform);
+    this.handlelcustomfilterClick();
 }       
 handlegeClick() {
     this.custombuttonPlatform = 'Google';
     console.log('Google button clicked' + this.custombuttonPlatform);
+    this.handlelcustomfilterClick();
 }   
+
+////////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
+handlelcustomfilterClick() {
+    this.ref.childRef.filteredData();
+
+}
+    
 }
