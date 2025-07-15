@@ -51,7 +51,14 @@ h3 {
 
 /* ///////////////////////////DND */
 
-
+/* Gobal card design */
+.store-card {
+    border: 1px solid #cfe3ff;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f6fbff;
+}
 /*   parent account hover and selctions css   */
 
 
@@ -105,13 +112,7 @@ h3 {
 /* /////////////////Child cssc */
 
 
-.store-card {
-    border: 1px solid #cfe3ff;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f6fbff;
-}
+
 
 .selected {
     border-color: #4da6ff;

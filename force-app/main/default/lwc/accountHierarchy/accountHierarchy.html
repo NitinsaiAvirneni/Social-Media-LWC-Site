@@ -1,14 +1,14 @@
 <template>
-    <div class="card">
+    <div class="card store-card">
         <h2>Account Hierarchy</h2>
 
-        <button class="slds-button slds-button_neutral" onclick={testButton}>TEST</button>
 
 
         <!-- Parent Store (clickable, opens popup) -->
         <div class="parent-store" onclick={handleParentClick} title="Click to select parent account">
             <div class="P-title">{parentAccount.name}</div>
-            <div class="P-subtext">{parentAccount.activeBranches} Sub branches</div>
+            <div class="P-subtext">{parentAccount.activeBranches} </div>
+            <div class="P-subtext">Sub Branches</div>
         </div>
 
         <!-- Popup Modal for Parent Account Selection -->
@@ -27,60 +27,53 @@
                 <button class="modal-close-btn" onclick={closeParentModal}>Close</button>
             </div>
         </template>
-      
+
 
         <!-- Child Accounts List -->
-        <template if:true={children}>
-            <div style="max-height: 320px; overflow-y: auto; margin-bottom: 4px;">
-                <template for:each={children} for:item="child">
-                    <div key={child.Id} class="child-card">
+
+        <template if:true={childAccounts}>
+            <div style="max-height: 320px; overflow-y: auto; margin-bottom: 4px; ">
+                <template for:each={childAccounts} for:item="child">
+                    <div key={child.Id} class="store-card {store.highlight ? 'selected' : ''}">
                         <div class="title">{child.Name}</div>
-                        <div class="details coolui-details">
-                            <template if:true={child.ContentTypesWithCount.length}>
-                                <ul>
-                                    <template for:each={child.ContentTypesWithCount} for:item="ct">
-                                        <li key={ct.ContentType}>
-                                            <template if:true={ct.Count}>
-                                                <!-- 
-                                                    To display content type counts, use conditional rendering here.
-                                                    Example:
-                                                    <template if:true={ct.ContentType === 'review'}>
-                                                        <p>📍 {ct.Count} reviews</p>
-                                                    </template>
-                                                    ... 
-                                                    Uncomment and adjust as needed.
-                                                -->
-                                            </template>
-                                        </li>
-                                    </template>
-                                </ul>
-                            </template>
-                            <template if:false={child.ContentTypesWithCount.length}>
-                                <p>No Content</p>
-                            </template>
+
+                        <!-- Display content type counts -->
+                        <div class="content-counts">
+                            <p>📝 Posts: {child.postCount}</p>
+                            <p>🎬 Reels: {child.reelCount}</p>
+                            <p>⭐ Reviews: {child.reviewCount}</p>
+                            <p>📖 Stories: {child.storyCount}</p>
+                            <p>🐦 Tweets: {child.tweetCount}</p>
+                            <p>📹 Videos: {child.videoCount}</p>
+
                         </div>
                     </div>
                 </template>
             </div>
-        </template>
-        <template if:true={error}>
-            <div class="error-message">
-                Error loading child accounts: {error}
-            </div>
-        </template>
+   
+</template>
 
-        <!-- Today's Activity -->
-        <div class="activity">
-            <h3>Today's Activity</h3>
-            <ul>
-                <li>New Reviews <span style="color: blue;">3</span></li>
-                <!--   ////here later use dynamic values from js and css dynmacial  -->
-                <li>New Posts <span style="color: red">5</span></li>
-                <li>Pending Responses <span style="color: rgb(192, 255, 199)">8</span></li>
-                <li>High Potential Leads <span style="color: rgb(255, 0, 255)">4</span></li>
-                <li>Converted Today <span style="color: rgb(0, 255, 0)">2</span></li>
-            </ul>
-        </div>
-        <!-- here get values from js -->
+<!-- Error Message -->
+<template if:true={error}>
+    <div class="error-message">
+        Error loading child accounts: {error}
     </div>
+</template>
+
+
+<!-- Child Account DND -->
+<!-- Today's Activity -->
+<div class="activity">
+    <h3>Today's Activity</h3>
+    <ul>
+        <li>New Reviews <span style="color: blue;">3</span></li>
+        <!--   ////here later use dynamic values from js and css dynmacial  -->
+        <li>New Posts <span style="color: red">5</span></li>
+        <li>Pending Responses <span style="color: rgb(192, 255, 199)">8</span></li>
+        <li>High Potential Leads <span style="color: rgb(255, 0, 255)">4</span></li>
+        <li>Converted Today <span style="color: rgb(0, 255, 0)">2</span></li>
+    </ul>
+</div>
+<!-- here get values from js -->
+</div>
 </template>
