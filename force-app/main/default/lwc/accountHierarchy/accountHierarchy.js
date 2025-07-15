@@ -36,45 +36,57 @@ export default class accountHierarchy extends LightningElement {
     closeParentModal() {
         this.showParentModal = false;
     }
+    ///////////////////////////////////////////////////////////////////////////
+    
+        @track ParentId; //
 
-    selectParentAccount(event) {
-        const selectedId = event.currentTarget.dataset.id;
-        const selected = this.parentAccounts.find(acc => acc.id === selectedId);
+    selectParentAccountId(event) {
+        const ParentId = event.currentTarget.dataset.id;
+        const selected = this.parentAccounts.find(acc => acc.id === ParentId);
         if (selected) {
             this.parentAccount = selected;
-            this.selectedId = selectedId;
+            console.log('Selected Parent Account:', JSON.stringify(this.parentAccount));
+            this.ParentId = ParentId;
             this.fetchChildAccounts();
         }
         this.showParentModal = false;
     }
 
     ////////////////////////////////////////////////////////////PARENT ACCOUNT JS DND /////////////////////////////////////////////////////////////////////////////
+@track childId = '';
 
-
-
-    //////////////////////////////////////TEST//////////////////////////////
-    testButton() {
-        console.log(this.selectedId);
-        this.fetchChildAccounts();
+selectChildAccountId(event) {
+    const ChildId = event.currentTarget.dataset.id;
+    const selected = this.childAccounts.find(acc => acc.Id === ChildId);
+    if (selected) {
+        console.log('Selected Child Account:', this.childId);
+        this.childId = ChildId;
+        this.dispatchEvent(new CustomEvent('childaccountselected', {
+            detail: {
+                childId: this.childId,
+                childName: selected.Name
+            }
+        }));
+        ////here action
     }
+}
 
     ////////////////////////////////////////////////////////////////////////
 
     /////////////////////////////////////CHILD ACCOUNT JS/////////////////////////////////////////////////////
-   
 
-    
+
+
     @track childAccounts = [];
     @track error;
-    @track selectedId; //
 
-async fetchChildAccounts() {
-        if (this.selectedId) {
+    async fetchChildAccounts() {
+        if (this.ParentId) {
             try {
-                const result = await getChildAccountsWithContentTypeCountsByParentId({ 
-                    parentId: this.selectedId 
+                const result = await getChildAccountsWithContentTypeCountsByParentId({
+                    parentId: this.ParentId
                 });
-                
+
                 // The Apex method returns a Map with 'Children' key
                 this.childAccounts = result.Children ? result.Children.map(acc => {
                     // Process ContentTypesWithCount to extract individual counts
@@ -85,7 +97,7 @@ async fetchChildAccounts() {
                     const storyObj = contentTypes.find(ct => ct.ContentType === 'story');
                     const tweetObj = contentTypes.find(ct => ct.ContentType === 'tweet');
                     const videoObj = contentTypes.find(ct => ct.ContentType === 'video');
-                    
+
                     return {
                         Id: acc.Id,
                         Name: acc.Name,
@@ -98,7 +110,7 @@ async fetchChildAccounts() {
                         videoCount: videoObj ? videoObj.Count : 0,
                     };
                 }) : [];
-                
+
                 this.error = undefined;
             } catch (error) {
                 console.error('Error fetching child accounts:', error);
@@ -110,12 +122,7 @@ async fetchChildAccounts() {
         }
     }
 
-    // Method to handle parent selection change
-    handleParentChange(event) {
-        this.selectedId = event.target.value;
-        // If using imperative method, call fetchChildAccounts here
-        // this.fetchChildAccounts();
-    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
     @api selectedPlatform = '';

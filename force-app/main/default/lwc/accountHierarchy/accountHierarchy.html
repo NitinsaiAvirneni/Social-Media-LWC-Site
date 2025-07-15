@@ -18,7 +18,7 @@
                 <h3>Select Parent Account</h3>
                 <div style="max-height: 200px; overflow-y: auto;">
                     <template for:each={parentAccounts} for:item="account">
-                        <div key={account.id} class="modal-item enhanced-modal-item" onclick={selectParentAccount}
+                        <div key={account.id} class="modal-item enhanced-modal-item" onclick={selectParentAccountId}
                             data-id={account.id} title="Click to select this parent account">
                             <span class="account-icon">🏢</span> {account.name}
                         </div>
@@ -32,48 +32,50 @@
         <!-- Child Accounts List -->
 
         <template if:true={childAccounts}>
-            <div style="max-height: 320px; overflow-y: auto; margin-bottom: 4px; ">
-                <template for:each={childAccounts} for:item="child">
-                    <div key={child.Id} class="store-card {store.highlight ? 'selected' : ''}">
-                        <div class="title">{child.Name}</div>
-
-                        <!-- Display content type counts -->
-                        <div class="content-counts">
-                            <p>📝 Posts: {child.postCount}</p>
-                            <p>🎬 Reels: {child.reelCount}</p>
-                            <p>⭐ Reviews: {child.reviewCount}</p>
-                            <p>📖 Stories: {child.storyCount}</p>
-                            <p>🐦 Tweets: {child.tweetCount}</p>
-                            <p>📹 Videos: {child.videoCount}</p>
-
-                        </div>
+            <div style="max-height: 350px; overflow-y: auto;">
+            <template for:each={childAccounts} for:item="child">
+                <div key={child.Id} class="child-store-wrapper">
+                <div class="child-store {child.highlight ? 'selected' : ''}"
+                    onclick={selectChildAccountId} data-id={child.Id}>
+                    <div style="max-height: 320px; overflow-y: auto; margin-bottom: 4px;">
+                    <div class="title">{child.Name}</div>
+                    <!-- Display content type counts -->
+                    <div class="content-counts">
+                        <p>📝 Posts: {child.postCount}</p>
+                        <p>🎬 Reels: {child.reelCount}</p>
+                        <p>⭐ Reviews: {child.reviewCount}</p>
+                        <p>📖 Stories: {child.storyCount}</p>
+                        <p>🐦 Tweets: {child.tweetCount}</p>
+                        <p>📹 Videos: {child.videoCount}</p>
                     </div>
-                </template>
+                    </div>
+                </div>
+                </div>
+            </template>
             </div>
-   
-</template>
+        </template>
 
-<!-- Error Message -->
-<template if:true={error}>
-    <div class="error-message">
-        Error loading child accounts: {error}
+        <!-- Error Message -->
+        <template if:true={error}>
+            <div class="error-message">
+                Error loading child accounts: {error}
+            </div>
+        </template>
+
+
+        <!-- Child Account DND -->
+        <!-- Today's Activity -->
+        <div class="activity">
+            <h3>Today's Activity</h3>
+            <ul>
+                <li>New Reviews <span style="color: blue;">3</span></li>
+                <!--   ////here later use dynamic values from js and css dynmacial  -->
+                <li>New Posts <span style="color: red">5</span></li>
+                <li>Pending Responses <span style="color: rgb(192, 255, 199)">8</span></li>
+                <li>High Potential Leads <span style="color: rgb(255, 0, 255)">4</span></li>
+                <li>Converted Today <span style="color: rgb(0, 255, 0)">2</span></li>
+            </ul>
+        </div>
+        <!-- here get values from js -->
     </div>
-</template>
-
-
-<!-- Child Account DND -->
-<!-- Today's Activity -->
-<div class="activity">
-    <h3>Today's Activity</h3>
-    <ul>
-        <li>New Reviews <span style="color: blue;">3</span></li>
-        <!--   ////here later use dynamic values from js and css dynmacial  -->
-        <li>New Posts <span style="color: red">5</span></li>
-        <li>Pending Responses <span style="color: rgb(192, 255, 199)">8</span></li>
-        <li>High Potential Leads <span style="color: rgb(255, 0, 255)">4</span></li>
-        <li>Converted Today <span style="color: rgb(0, 255, 0)">2</span></li>
-    </ul>
-</div>
-<!-- here get values from js -->
-</div>
 </template>

@@ -111,7 +111,34 @@ h3 {
 
 /* /////////////////Child cssc */
 
+.child-store {
+    background: linear-gradient(90deg, #f0fff4 80%, #c7ffd8 100%);
+    /* lighter greenish gradient to differentiate from parent */
+    border: 2px solid #34d399;
+    /* green border instead of blue */
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(52, 211, 153, 0.08);
+    cursor: pointer;
+    padding: 16px 18px;
+    transition: background 0.22s, box-shadow 0.22s, transform 0.18s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 4px;
+    max-height: 320px;
+    overflow-y: auto;
+    max-width: 340px; /* limit width to prevent overflow */
+    width: 100%;
+    box-sizing: border-box;
+    word-break: break-word;
+}
 
+.child-store:hover {
+    background: linear-gradient(90deg, #e6fffa 80%, #f0fff4 100%);
+    /* subtle teal/green hover */
+    box-shadow: 0 6px 24px rgba(52, 211, 153, 0.14);
+    transform: translateY(-2px) scale(1.02);
+}
 
 
 .selected {
