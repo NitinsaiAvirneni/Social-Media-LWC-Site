@@ -276,7 +276,7 @@ for (String type : allContentTypes) {
 ///////////////////////////Above same with samlpe 2///////////////
 
     @AuraEnabled(cacheable=true)
-    public static List<Map<String, Object>> getFakeDataFromAccount(Id accountId) {
+    public static List<Map<String, Object>> getDataFromAccount(Id accountId) {
         List<Map<String, Object>> result = new List<Map<String, Object>>();
 
         // Get related content

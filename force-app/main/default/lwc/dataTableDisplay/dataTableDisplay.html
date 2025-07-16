@@ -1,8 +1,6 @@
 <template>
     <lightning-card title="Social Media Insights" icon-name="standard:social">
-        <button class="slds-button slds-button_neutral slds-m-bottom_small" onclick={test}>
-                                Test Button
-                            </button>
+        <lightning-button label="Test Button" class="slds-m-bottom_small" onclick={test}></lightning-button>
         <div class="slds-p-around_medium">
             <div style="max-height: 500px; overflow-y: auto;">
                 <template for:each={filteredData} for:item="item">
@@ -26,8 +24,8 @@
                         <div class="slds-grid slds-wrap slds-m-bottom_small">
                             <lightning-button variant="base" label="Reply" class="slds-m-right_small"></lightning-button>
                             <lightning-button variant="base" label="View Original" class="slds-m-right_small"></lightning-button>
-                            <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small"></lightning-button>
-                            <lightning-button variant="destructive" label="Create Case"></lightning-button>
+                            <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small" onclick={ConvertToLead} data-id={item.id}></lightning-button>
+                            <lightning-button variant="destructive" label="Create Case" onclick={CovertToCase} data-id={item.id}></lightning-button>
                         </div>
 
                         <!-- AI Analysis -->

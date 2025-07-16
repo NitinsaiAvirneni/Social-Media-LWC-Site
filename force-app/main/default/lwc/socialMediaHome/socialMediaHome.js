@@ -15,7 +15,7 @@ export default class socialMediaHome extends LightningElement {
  
 setchildaccountid(event) {
     this.subaccountId = event.detail.childId;////get id from child component accountHierarchy
-    console.log('Subaccount ID set in socialMediaHome:', this.subaccountId);
+    // this.ref.childRef.fetchData();
   }////send and call dataTableDisplay component
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
