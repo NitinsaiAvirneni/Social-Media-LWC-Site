@@ -1,71 +1,80 @@
 <template>
 
     <!-- ///////////////////////////////// Header////////////////////////////////////////////////////// -->
-     <div style="background-color:rgb(255, 255, 255); height: auto; width: auto;">  
+    <div style="background-color:rgb(255, 255, 255); height: auto; width: auto;">
         <!-- here is complete background page css above style  -->
-    <header class="slds-page-header slds-page-header_object-home custom-header headerDesigncolor">
-        <!-- header colour used here @headerDesigncolor -->
-        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
-            <div class="slds-page-header__name" style="display: flex; flex-direction: column; gap: 19.2px;">
-                <h2 class=headerTitle>
-                    Social Media Manager
-                </h2>
-                <p style="font-size: 20px; opacity: 0.92; margin: 0;">
-                    Manage reviews, posts, and customer interactions across platforms
-                </p>
-            </div>
-            <!-- title ends here -->
+        <header class="slds-page-header slds-page-header_object-home custom-header headerDesigncolor">
+            <!-- header colour used here @headerDesigncolor -->
+            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                <div class="slds-page-header__name" style="display: flex; flex-direction: column; gap: 19.2px;">
+                    <h2 class=headerTitle>
+                        Social Media Manager
+                    </h2>
+                    <p style="font-size: 20px; opacity: 0.92; margin: 0;">
+                        Manage reviews, posts, and customer interactions across platforms
+                    </p>
+                </div>
+                <!-- title ends here -->
 
-            <!-- actions items  -->
-            <div class="header-actions" style="display: flex; flex-direction: column; align-items: flex-end;">
-                <div class="actions" style="display: flex; gap: 19.2px;">
-                    <!-- actions button analytics here  -->
-                    <div class="action-item actionButtonAnalytics" onclick={testAnalytics}>
-                        <lightning-icon icon-name="utility:chart" alternative-text="Analytics" size="small" style="margin-right: 8px;"></lightning-icon>
-                        <span style="font-weight: 500;">Analytics</span>
-                    </div>
-                    <!-- actions buttonschedule item -->
-                    <div class="action-item actionButtonSchedule" onclick={testSchedule}>
-                        <lightning-icon icon-name="utility:event" alternative-text="Schedule Posts" size="small" style="margin-right: 8px;"></lightning-icon>
-                        <span style="font-weight: 500;">Schedule Posts</span>
+                <!-- actions items  -->
+                <div class="header-actions" style="display: flex; flex-direction: column; align-items: flex-end;">
+                    <div class="actions" style="display: flex; gap: 19.2px;">
+                        <!-- actions button analytics here  -->
+                        <div class="action-item actionButtonAnalytics" onclick={testAnalytics}>
+                            <lightning-icon icon-name="utility:chart" alternative-text="Analytics" size="small"
+                                style="margin-right: 8px;"></lightning-icon>
+                            <span style="font-weight: 500;">Analytics</span>
+                        </div>
+                        <!-- actions buttonschedule item -->
+                        <div class="action-item actionButtonSchedule" onclick={testSchedule}>
+                            <lightning-icon icon-name="utility:event" alternative-text="Schedule Posts" size="small"
+                                style="margin-right: 8px;"></lightning-icon>
+                            <span style="font-weight: 500;">Schedule Posts</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- ////////////////////////////////////////////////////////////////////DND HEADER ////////////////////////////////////////////////////////////////////////////-->
+        <!-- ////////////////////////////////////////////////////////////////////DND HEADER ////////////////////////////////////////////////////////////////////////////-->
 
-    <!-- ///////////////////////////////////////////////////////////////////BODY////////////////////////////////////////////////////////  -->
-    <div class="slds-grid slds-grid_align-spread slds-p-around_large" style="gap: 5px; margin-top: 32px; margin-bottom: 32px; background: rgb(90, 160, 240); border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);">
-        <!-- Left Body -->
-        <div class="slds-col slds-size_1-of-4" style="background:rgb(111, 194, 223); border-radius: 14px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-            <c-account-hierarchy></c-account-hierarchy>
-        </div>
-        <!-- Right Body Bar with Filter Button -->
-        <div class="slds-col slds-size_3-of-4" style="background: rgb(111, 194, 223); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              
-                <!-- Filter button -->
-                <button onclick={toggleRightBody} class="slds-button slds-button_neutral">
-                    Filter
-                </button>
+
+
+        <!-- ///////////////////////account selection////////////////////////////////////////////////////////  -->
+
+        <div class="slds-grid slds-grid_align-spread slds-p-around_large"
+            style="gap: 5px; margin-top: 32px; margin-bottom: 32px; background: rgb(90, 160, 240); border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);">
+            <div class="slds-col slds-size_1-of-4"
+                style="background:rgb(111, 194, 223); border-radius: 14px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                <c-account-hierarchy onchildaccountselected={setchildaccountid}></c-account-hierarchy>
             </div>
-            <template if:true={showRightBody}>
-                <c-filter-button onfilterchange={handleselectedPlatformChange}></c-filter-button>
-            </template>
-                <!-- Data Display Table -->
-                  <c-data-table-display 
-                selected-platform={selectedPlatform} 
-                selected-date={selectedDate} 
-                selected-item={selectedItem} 
-                search-term={searchTerm} 
-                custombutton-platform={custombuttonPlatform} 
-                lwc:ref="childRef">
-            </c-data-table-display>
 
-            
-        </div>
+            <!-- //////////////// Filter button ///////////////////////////////////////////////////account////////////////////////////////////////////////////////  -->
+
+            <div class="slds-col slds-size_3-of-4"
+                style="background: rgb(111, 194, 223); border-radius: 14px; padding: 10px 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+
+                    <button onclick={toggleRightBody} class="slds-button slds-button_neutral">
+                        Filter
+                    </button>
+                </div>
+
+
+                <template if:true={showRightBody}>
+                    <c-filter-button onfilterchange={handleselectedPlatformChange}></c-filter-button>
+                </template>
+
+                <!-- Data Display Table //////////////////////////////////////////////////////////////-->
+
+                <c-data-table-display selected-platform={selectedPlatform} selected-date={selectedDate}
+                    selected-item={selectedItem} search-term={searchTerm} custombutton-platform={custombuttonPlatform}
+                    subaccount-id={subaccountId} lwc:ref="childRef">
+
+                </c-data-table-display>
+                <!-- /////////////////////////////////////////////////////////////////////////////////////// -->
+
+            </div>
 
         </div>
     </div>

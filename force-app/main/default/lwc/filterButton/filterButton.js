@@ -5,7 +5,7 @@ export default class filterButton extends LightningElement {
     selectedDate = '';
     selectedItem = '';
     searchTerm = '';
-
+///////////////////////////////////////////////////
 
     platformOptions = [
         { label: 'All Platforms', value: 'Platforms' },
@@ -30,13 +30,7 @@ export default class filterButton extends LightningElement {
         { label: 'Reviews', value: 'reviews' }
     ];
 
-    @api
-    handlePlatformChange(event) {
-        this.selectedPlatform = event.detail.value;
-         // Apply filter when platform changes
-        
-        
-    }
+  ////////////////////////////////////////////////////////////////////////
 
     handleDateChange(event) {
         this.selectedDate = event.detail.value;

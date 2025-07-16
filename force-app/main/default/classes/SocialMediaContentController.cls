@@ -72,6 +72,8 @@ public static List<Account> getChildAccountsByParentId(Id parentId) {
     }
 }
 
+///////////////////////////////////////////GET child accounts review ,comments,posts,tweets//////////////////////////////////////////////////////////////////////////
+
 
 @AuraEnabled(cacheable=true)
 public static Map<String, Object> getChildAccountsWithContentTypeCountsByParentId(Id parentId) {
@@ -188,8 +190,7 @@ for (String type : allContentTypes) {
 
 
 
-///////////////////////////////////////////GET child accounts review ,comments,posts,tweets//////////////////////////////////////////////////////////////////////////
-
+///////////////////////////////////////////Child DND//////////////////////////////////////////////////
 
 
     @AuraEnabled(cacheable=true)
@@ -235,6 +236,85 @@ for (String type : allContentTypes) {
 
         return results;
     }
+//////////////////////////////////////SOCAIL MEDIA CONTENT BASES ON SUB ACCOUNT////////////////////////////////////////////////////
+
+@AuraEnabled(cacheable=true)
+    public static Map<String, Object> getContentWithInteractions(Id accountId) {
+        Map<String, Object> result = new Map<String, Object>();
+        
+        // Step 1: Get Social Media Content related to the Account via lookup
+        List<Social_Media_Content__c> contentList = [
+            SELECT Id, Name, Author_Name__c, Author_Platform_ID__c, Content_Text__c,
+                   Content_Type__c, Content_URL__c, Engagement_Score__c, Sentiment__c,
+                   Published_Date__c, Platform_Content_ID__c
+            FROM Social_Media_Content__c
+            WHERE Social_Media_Account__r.Account__c = :accountId
+        ];
+        
+        // Step 2: Collect Content Ids
+        Set<Id> contentIds = new Set<Id>();
+        for (Social_Media_Content__c c : contentList) {
+            contentIds.add(c.Id);
+        }
+
+        // Step 3: Get related interactions
+        List<Social_Media_Interaction__c> interactionList = new List<Social_Media_Interaction__c>();
+        if (!contentIds.isEmpty()) {
+            interactionList = [
+                SELECT Id, Name, Author_Name__c, Interaction_Text__c, Intent_Category__c,
+                       Sentiment__c, Urgency_Level__c, Response_Text__c, Response_Date__c,
+                       Has_Response__c, CreatedDate
+                FROM Social_Media_Interaction__c
+                WHERE Social_Media_Content__c IN :contentIds
+            ];
+        }
+
+        result.put('contents', contentList);
+        result.put('interactions', interactionList);
+        return result;
+    }
+///////////////////////////Above same with samlpe 2///////////////
+
+    @AuraEnabled(cacheable=true)
+    public static List<Map<String, Object>> getFakeDataFromAccount(Id accountId) {
+        List<Map<String, Object>> result = new List<Map<String, Object>>();
+
+        // Get related content
+        List<Social_Media_Content__c> contents = [
+            SELECT Id, Author_Name__c, Author_Platform_ID__c, Content_Text__c,
+                   Content_Type__c, Sentiment__c, Published_Date__c,
+                   Engagement_Score__c
+            FROM Social_Media_Content__c
+            WHERE Social_Media_Account__r.Account__c = :accountId
+        ];
+
+        for (Social_Media_Content__c c : contents) {
+            Map<String, Object> row = new Map<String, Object>();
+            row.put('id', c.Id);
+            row.put('author', c.Author_Name__c);
+            row.put('source', c.Author_Platform_ID__c);
+            row.put('date', String.valueOf(c.Published_Date__c));
+            row.put('sentiment', c.Sentiment__c != null ? c.Sentiment__c.toLowerCase() : 'neutral');
+            row.put('message', c.Content_Text__c);
+
+            // AI Analysis block
+            Map<String, Object> analysis = new Map<String, Object>();
+            analysis.put('contentType', c.Content_Type__c);
+            analysis.put('intent', 'Purchase Interest'); // Example fallback
+            analysis.put('urgency', 'Medium');
+            analysis.put('engagement', c.Engagement_Score__c != null ? c.Engagement_Score__c : 0);
+            analysis.put('confidence', 87); // example static, or based on logic
+            analysis.put('action', 'Follow up within 2 hours');
+
+            row.put('analysis', analysis);
+            result.add(row);
+        }
+
+        return result;
+    }
+
+
+    ///////////////////////////////////////RECOMMENDED ACTION BASED ON URGENCY AND INTENT////////////////////////////////////////////////////
 
     private static String getRecommendedAction(String urgency, String intent) {
         if (urgency == 'high' || urgency == 'critical') {

@@ -9,7 +9,14 @@ export default class socialMediaHome extends LightningElement {
     selectedItem;
     searchTerm;
     custombuttonPlatform;
+    subaccountId ;
+
+
  
+setchildaccountid(event) {
+    this.subaccountId = event.detail.childId;////get id from child component accountHierarchy
+    console.log('Subaccount ID set in socialMediaHome:', this.subaccountId);
+  }////send and call dataTableDisplay component
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     testAnalytics() {
@@ -48,7 +55,7 @@ handleselectedPlatformChange(event) {
 handlefbClick() {
     this.custombuttonPlatform = 'Facebook';
     console.log('Facebook button clicked ' + this.custombuttonPlatform);
-    handlelcustomfilterClick(); 
+    this.handlelcustomfilterClick(); 
 }
  
 handleimClick(){
@@ -75,8 +82,7 @@ handlegeClick() {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
 handlelcustomfilterClick() {
-    this.ref.childRef.filteredData();
+    this.ref.childRef.filteredData();}
 
-}
-    
-}
+}////////////calls filter bution in dataTableDisplay component to filter the data based on selected platform
+/////////////////////////////////////////////////////////

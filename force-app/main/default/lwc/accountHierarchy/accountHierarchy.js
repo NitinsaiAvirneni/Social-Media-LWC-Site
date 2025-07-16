@@ -67,7 +67,7 @@ selectChildAccountId(event) {
                 childName: selected.Name
             }
         }));
-        ////here action
+        ////sending the child account id to the parent component
     }
 }
 
