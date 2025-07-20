@@ -9,6 +9,7 @@ export default class DataDisplayTale extends LightningElement {
     @api searchTerm = '';
     @api custombuttonPlatform = '';
     @api subaccountId; // Account Id
+    @api showAnalyis;/////////////Show AI Analysis
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +28,9 @@ export default class DataDisplayTale extends LightningElement {
             console.error('Error fetching SMData:', error);
         }
     }
+
+    
+
 
     ////////////to filter data based on selected platform/////////////////////////////////////////////////////
     get filteredData() {

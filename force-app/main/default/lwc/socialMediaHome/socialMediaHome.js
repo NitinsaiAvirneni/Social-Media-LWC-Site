@@ -10,9 +10,12 @@ export default class socialMediaHome extends LightningElement {
     searchTerm;
     custombuttonPlatform;
     subaccountId ;
-
-
- 
+////////////////////ai analysis variable/////////////////////////////////////////////////////
+    showAnalyis =false; // Variable to control AI analysis visibility
+    recordId; // Variable to hold the record ID for child component
+ ShowAIAnalysis() {
+        this.showAnalyis = !this.showAnalyis;
+       }
 setchildaccountid(event) {
     this.subaccountId = event.detail.childId;////get id from child component accountHierarchy
         this.recordId=this.subaccountId;////get id from child component piechart lwc

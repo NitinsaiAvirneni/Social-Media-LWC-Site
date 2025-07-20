@@ -59,6 +59,12 @@
                     <button onclick={toggleRightBody} class="slds-button slds-button_neutral">
                         Filter
                     </button>
+
+                      <!-- here  AI Analysis button here  -->
+                    <button class="slds-button slds-button_neutral" onclick={ShowAIAnalysis}> <!-- here i am adding postion in the diu ti check the postion  -->
+                        AI Analysis    
+                    </button>
+                    <!-- here AI Analysis button ends  -->
                 </div>
 
 
@@ -68,9 +74,20 @@
 
                 <!-- Data Display Table //////////////////////////////////////////////////////////////-->
 
-                <c-data-table-display selected-platform={selectedPlatform} selected-date={selectedDate}
+                 <c-data-table-display selected-platform={selectedPlatform} selected-date={selectedDate}
                     selected-item={selectedItem} search-term={searchTerm} custombutton-platform={custombuttonPlatform}
-                    subaccount-id={subaccountId} lwc:ref="childRef">
+                    subaccount-id={subaccountId}  show-analyis={showAnalyis} lwc:ref="childRef">
+
+                    <!-- selectplatform
+                     selectdate
+                     selectedItem
+                     searchTerm
+                     custombuttonPlatform
+                     SubaccountId
+                     showAnalysis
+                     these are api to datatable where which are from here  
+                     
+                     lwc:ref="childRef" used to call fuctions from there -->
 
                 </c-data-table-display>
                 <!-- /////////////////////////////////////////////////////////////////////////////////////// -->

@@ -29,6 +29,7 @@
                         </div>
 
                         <!-- AI Analysis -->
+                       <template if:true={showAnalyis}>
                         <div class="slds-box slds-theme_shade">
                             <p><strong>AI Analysis</strong></p>
                             <p>Content Type: {item.analysis.contentType}</p>
@@ -38,6 +39,7 @@
                             <p>Confidence: {item.analysis.confidence}%</p>
                             <p class="slds-text-color_weak slds-text-body_small">Suggested Action: {item.analysis.action}</p>
                         </div>
+                         </template>
                     </div>
                 </template>
             </div>
