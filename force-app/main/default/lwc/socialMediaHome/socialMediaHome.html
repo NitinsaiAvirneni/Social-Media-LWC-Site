@@ -19,12 +19,13 @@
                 <!-- actions items  -->
                 <div class="header-actions" style="display: flex; flex-direction: column; align-items: flex-end;">
                     <div class="actions" style="display: flex; gap: 19.2px;">
-                        <!-- actions button analytics here  -->
-                        <div class="action-item actionButtonAnalytics" onclick={testAnalytics}>
-                            <lightning-icon icon-name="utility:chart" alternative-text="Analytics" size="small"
-                                style="margin-right: 8px;"></lightning-icon>
-                            <span style="font-weight: 500;">Analytics</span>
-                        </div>
+                       
+
+                       
+                            <c-social-media-pie-analytics record-id={recordId} lwc:ref="childRef" ></c-social-media-pie-analytics>
+                            <!-- getting sub account id from account c-account-hierarchy to main lwc and sending to recordId in child piechart lwc  -->
+                       
+
                         <!-- actions buttonschedule item -->
                         <div class="action-item actionButtonSchedule" onclick={testSchedule}>
                             <lightning-icon icon-name="utility:event" alternative-text="Schedule Posts" size="small"

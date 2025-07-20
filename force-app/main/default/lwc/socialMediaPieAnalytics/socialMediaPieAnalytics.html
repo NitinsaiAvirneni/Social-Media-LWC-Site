@@ -1,0 +1,35 @@
+<template>
+     <div class="action-item actionButtonAnalytics" onclick={openParentModal}>
+                            <lightning-icon icon-name="utility:chart" alternative-text="Analytics" size="small"
+                                style="margin-right: 8px;"></lightning-icon>
+                            <span style="font-weight: 500;">Analytics</span>
+                        </div>
+
+    <!-- Parent Chart Modal -->
+    <template if:true={showParentModal}>
+        <section class="modal-backdrop">
+            <div class="modal parent">
+                <header class="modal-header">
+                    <h2>Interactions by Child Account</h2>
+                    <button class="close-btn" onclick={closeParentModal} title="Close">&times;</button>
+                </header>
+                <div class="modal-body">
+                    <canvas class="parent-chart" lwc:dom="manual"></canvas>
+                </div>
+            </div>
+
+            <!-- Child Modal beside -->
+            <template if:true={showChildModal}>
+                <div class="modal child">
+                    <header class="modal-header">
+                        <h2>{childChartTitle}</h2>
+                        <button class="close-btn" onclick={closeChildModal} title="Close">&times;</button>
+                    </header>
+                    <div class="modal-body">
+                        <canvas class="child-chart" lwc:dom="manual"></canvas>
+                    </div>
+                </div>
+            </template>
+        </section>
+    </template>
+</template>

@@ -1,0 +1,63 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    gap: 1rem;
+}
+
+.modal {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.5rem;
+}
+
+.modal-body {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.close-btn {
+    font-size: 1.5rem;
+    background: none;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.modal.parent {
+    margin-right: 1rem;
+}
+
+.modal.child {
+    margin-left: 1rem;
+}
+/* ////////////////////////////// */
+
+.actionButtonAnalytics {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.13);
+    border-radius: 8px;
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
