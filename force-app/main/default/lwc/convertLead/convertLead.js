@@ -1,10 +1,11 @@
 import { LightningElement, api, track } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 // Make sure the Apex class 'SocialMediaContentController' exists in your org under force-app/main/default/classes/
 // If your class name is different, update it accordingly below:
 import createLead from '@salesforce/apex/SocialMediaContentController.createLead';
 
 export default class ConvertLead extends LightningElement {
-    @api showModal = false;//
     @api leadData; // Data passed from the parent component
 
 
@@ -15,7 +16,9 @@ export default class ConvertLead extends LightningElement {
     @track email = '';
     @track phone = '';
 
-    show = true;
+    show = true;////this is first modal variable
+    showModal = false;// this is second modal variable
+
 
     connectedCallback() {
         if (this.leadData) {
@@ -32,24 +35,30 @@ export default class ConvertLead extends LightningElement {
         return `${this.firstName} ${this.lastName}`;
     }
 
-    
-
+    //This page has an error. You might just need to refresh it. [ShowToastEvent is not defined] Failing descriptor: {markup://c:convertLead}
+    //////////////////////////////////////////first confimation modal/////////////////////////////////////////////////////
     handleCancel() {
         this.show = false;
-        this.showModal = false;
-        this.dispatchEvent(new CustomEvent('modalclosed', { detail: false }));
+        this.closefirstmodal()
         console.log('Modal closed');
     }
+    ////////////////////////////////////////////////////////////////////////////////////
+    closefirstmodal() {
+        this.dispatchEvent(new CustomEvent('modalclosed', { detail: false }));
+    }
 
-
+    //////////////////////////////////////////////////////////
 
     handleConvert() {
         this.showModal = true;
     }
-
+    ///////////////////////////////////////////secound modal close button/////////////////////////////////////////////////////  
     closeModal() {
         this.showModal = false;
+        this.closefirstmodal()///also links first modal with secound modal to close both at once
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     handleChange(event) {
         const field = event.target.dataset.id;
@@ -58,6 +67,15 @@ export default class ConvertLead extends LightningElement {
 
     async saveLead() {
         try {
+            // Validate required fields before calling Apex
+            if (!this.firstName || !this.lastName || !this.company) {
+                this.dispatchEvent(new ShowToastEvent({
+                    title: "Missing Required Fields",
+                    message: "First Name, Last Name, and Company are required.",
+                    variant: "error"
+                }));
+                return;
+            }
             const lead = {
                 FirstName: this.firstName,
                 LastName: this.lastName,
@@ -66,11 +84,27 @@ export default class ConvertLead extends LightningElement {
                 Email: this.email,
                 Phone: this.phone
             };
+            console.log('Lead data to be saved:', JSON.stringify(lead, null, 2));
             await createLead({ lead });
             this.showModal = false;
-            this.dispatchEvent(new CustomEvent('leadcreated'));
+            this.dispatchEvent(new ShowToastEvent({
+                title: "Success",
+                message: "Lead created successfully.",
+                variant: "success"
+            }));
+            this.closefirstmodal(); // Close the first modal after lead creation
         } catch (error) {
-            // Handle error (show toast, etc.)
+            let errorMsg = "Failed to create lead.";
+            if (error && error.body && error.body.message) {
+                errorMsg = `Failed to create lead: ${error.body.message}`;
+            } else if (error && error.message) {
+                errorMsg = `Failed to create lead: ${error.message}`;
+            }
+            this.dispatchEvent(new ShowToastEvent({
+                title: "Lead Creation Error",
+                message: errorMsg,
+                variant: "error"
+            }));
         }
     }
 }

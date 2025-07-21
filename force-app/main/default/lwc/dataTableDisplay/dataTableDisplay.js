@@ -1,4 +1,4 @@
-import { LightningElement, api, track,wire } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import getDataFromAccount from '@salesforce/apex/SocialMediaContentController.getDataFromAccount';
 
 export default class DataDisplayTale extends LightningElement {
@@ -10,48 +10,58 @@ export default class DataDisplayTale extends LightningElement {
     @api custombuttonPlatform = '';
     @api subaccountId; // Account Id
     @api showAnalyis;/////////////Show AI Analysis
-    showconverttoLead =false;
     //////////////////////track variables/////////////////////////////////////////////////////
     @track SMData = []; // Social Media Data
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    test() {
-        console.log("subaccount", this.subaccountId);
+
+
+    @track selectedLeadItemId; // Track selected lead item ID
+
+    /////////////////////////////convert to lead/////////////////////////////////////////////////////
+
+        showconverttoLead = false;
+
+    onclickedshowconverttoLead(event) {
+        this.showconverttoLead = !this.showconverttoLead; // Toggle showconverttoLead
+        this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
     }
 
-   
-
-@track selectedLeadItemId; // Track selected lead item ID
-
-onclickedshowconverttoLead(event) {
-    this.showconverttoLead = !this.showconverttoLead; // Toggle showconverttoLead
-    this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
-}
-
-/////////////////////////////convert to lead and case/////////////////////////////////////////////////////
-ConvertToLead(event) {
-    if (event.detail === false) { // this event is from child to parent
-        this.showconverttoLead = false; // Reset if false
-    }
-    // Optionally, you can handle selectedLeadItemId here if needed
-    return this.showconverttoLead; // Return current state
-}
-
-
-/////////////////ConvertToCase//////////////////////
-ConvertToCase(event) {
-    this.selectedCaseItemId = event.itemId; // Get the selected item ID from the event
-    const customEvent = new CustomEvent('converttocase', {
-        detail: {
-            selectedItem: this.selectedCaseItemId,
+    ConvertToLead(event) {
+        if (event.detail === false) { // this event is from child to parent
+            this.showconverttoLead = false; // Reset if false
         }
-    });
-    this.dispatchEvent(customEvent);
-}
+        // Optionally, you can handle selectedLeadItemId here if needed
+        return this.showconverttoLead; // Return current state
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        showconverttocase = false;
+
+
+    /////////////////ConvertToCase//////////////////////
+     onclickedshowconverttoCase(event) {
+        this.showconverttocase = !this.showconverttocase; // Toggle showconverttoLead
+        this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
+    }
+
+    ConvertTocase(event) {
+        if (event.detail === false) { // this event is from child to parent
+            this.showconverttocase = false; // Reset if false
+        }
+        // Optionally, you can handle selectedLeadItemId here if needed
+        return this.showconverttocase; // Return current state
+    }
+
+
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+//////////////////////to get data from apex class actively @wire/////////////////////////////////////////////////////
 
     @wire(getDataFromAccount, { accountId: '$subaccountId' })
     wiredData({ error, data }) {
@@ -63,7 +73,7 @@ ConvertToCase(event) {
         }
     }
 
-    
+
 
 
     ////////////to filter data based on selected platform/////////////////////////////////////////////////////

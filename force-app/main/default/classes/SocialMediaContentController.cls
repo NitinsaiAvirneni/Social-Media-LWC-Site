@@ -68,11 +68,24 @@ public with sharing class SocialMediaContentController {
 
     ///////////Insert to Leads with error handling and field validation///
     @AuraEnabled
-    public static Lead createLead(Lead leadData) {
+    public static Lead createLead(Map<String, Object> lead) {
+        // Null check for lead
+        if (lead == null) {
+            throw new AuraHandledException('Lead data is required.');
+        }
         // Basic validation (example: required fields)
-        if (String.isBlank(leadData.LastName) || String.isBlank(leadData.Company)) {
+        String lastName = (String)lead.get('LastName');
+        String company = (String)lead.get('Company');
+        if (String.isBlank(lastName) || String.isBlank(company)) {
             throw new AuraHandledException('LastName and Company are required.');
         }
+        Lead leadData = new Lead();
+        leadData.FirstName = (String)lead.get('FirstName');
+        leadData.LastName = lastName;
+        leadData.Company = company;
+        leadData.Title = (String)lead.get('Title');
+        leadData.Email = (String)lead.get('Email');
+        leadData.Phone = (String)lead.get('Phone');
         try {
             insert leadData;
             return leadData;
@@ -80,13 +93,31 @@ public with sharing class SocialMediaContentController {
             throw new AuraHandledException('Error creating Lead: ' + e.getMessage());
         }
     }
+    
     ///////////Insert to Cases///
     @AuraEnabled
-    public static Case createCase(Case caseData) {
+    public static Case createCase(Map<String, Object> caseMap) {
+        // Null check for caseMap
+        if (caseMap == null) {
+            throw new AuraHandledException('Case data is required.');
+        }
         // Basic validation (example: required fields)
-        if (String.isBlank(caseData.Subject) || String.isBlank(caseData.Origin)) {
+        String subject = (String)caseMap.get('Subject');
+        String origin = (String)caseMap.get('Origin');
+        if (String.isBlank(subject) || String.isBlank(origin)) {
             throw new AuraHandledException('Subject and Origin are required.');
         }
+        Case caseData = new Case();
+        caseData.Subject = subject;
+        caseData.Origin = origin;
+        caseData.Status = (String)caseMap.get('Status');
+        caseData.Priority = (String)caseMap.get('Priority');
+        caseData.Description = (String)caseMap.get('Description');
+        caseData.ContactId = (Id)caseMap.get('ContactId');
+        caseData.AccountId = (Id)caseMap.get('AccountId');
+        // Add support for SuppliedEmail and SuppliedPhone
+        caseData.SuppliedEmail = (String)caseMap.get('SuppliedEmail');
+        caseData.SuppliedPhone = (String)caseMap.get('SuppliedPhone');
         try {
             insert caseData;
             return caseData;
@@ -362,23 +393,112 @@ public with sharing class SocialMediaContentController {
     
     
     /////////////////////////////////////////////////For Pie Chart Data////////////////////////////////////////////////////
-    @AuraEnabled(cacheable=true)
+    // @AuraEnabled(cacheable=true)
+    // public static List<Map<String, Object>> getInteractionSummaryByParent(Id parentId) {
+    //     List<Map<String, Object>> result = new List<Map<String, Object>>();
+
+    //     // Query all Social Media Accounts under the given parent Account
+    //     List<Social_Media_Account__c> accounts = [
+    //         SELECT Id, Name, Platform__c
+    //         FROM Social_Media_Account__c
+    //         WHERE Account__c = :parentId
+    //     ];
+
+    //     // Collect all Social_Media_Account__c Ids for batch query
+    //     Set<Id> socialMediaAccountIds = new Set<Id>();
+    //     for (Social_Media_Account__c acc : accounts) {
+    //         socialMediaAccountIds.add(acc.Id);
+    //     }
+
+    //     // Query all Social_Media_Content__c for these accounts
+    //     Map<Id, List<Social_Media_Content__c>> accountIdToContents = new Map<Id, List<Social_Media_Content__c>>();
+
+    //     // Query all interactions for these contents
+    //     Map<Id, Integer> contentIdToInteractionCount = new Map<Id, Integer>();
+    //     if (!contentIds.isEmpty()) {
+    //         AggregateResult[] interactionCounts = [
+    //             SELECT Social_Media_Content__c contentId, COUNT(Id) cnt
+    //             FROM Social_Media_Interaction__c
+    //             WHERE Social_Media_Content__c IN :contentIds
+    //             GROUP BY Social_Media_Content__c
+    //         ];
+    //         for (AggregateResult ar : interactionCounts) {
+    //             contentIdToInteractionCount.put(
+    //                 (Id)ar.get('contentId'),
+    //                 (Integer)ar.get('cnt')
+    //             );
+    //         }
+    //     }
+
+    //     // For each account, sum up the interactions of its contents
+    //     for (Social_Media_Account__c acc : accounts) {
+    //         Integer count = 0;
+    //         for (Social_Media_Content__c content : acc.Social_Media_Contents__r) {
+    //             count += contentIdToInteractionCount.containsKey(content.Id) ? contentIdToInteractionCount.get(content.Id) : 0;
+    //         }
+    //         result.add(new Map<String, Object>{
+    //             'label' => acc.Name,
+    //             'value' => count,
+    //             'id' => acc.Id
+    //         });
+    //     }
+        
+    //     return result;
+    // }
+    
+    
+    // @AuraEnabled(cacheable=true)
+    // public static List<Map<String, Object>> getPlatformBreakdownByAccount(Id accountId) {
+    //     List<Map<String, Object>> output = new List<Map<String, Object>>();
+    //     AggregateResult[] groupedResults = [
+    //         SELECT Content_Type__c contentType, COUNT(Id) total
+    //         FROM Social_Media_Content__c
+    //         WHERE Social_Media_Account__c = :accountId
+    //         GROUP BY Content_Type__c
+    //     ];
+        
+    //     for (AggregateResult ar : groupedResults) {
+    //         output.add(new Map<String, Object>{
+    //             'label' => String.valueOf(ar.get('contentType')),
+    //             'value' => (Integer) ar.get('total')
+    //         });
+    //     }
+        
+    //     return output;
+    // }
+
+     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getInteractionSummaryByParent(Id parentId) {
         List<Map<String, Object>> result = new List<Map<String, Object>>();
-        
+
         // Query all Social Media Accounts under the given parent Account
         List<Social_Media_Account__c> accounts = [
-            SELECT Id, Name, Platform__c,
-                (SELECT Id FROM Social_Media_Contents__r)
+            SELECT Id, Name, Platform__c
             FROM Social_Media_Account__c
             WHERE Account__c = :parentId
         ];
 
-        // Collect all Social_Media_Content__c Ids for batch query
-        Set<Id> contentIds = new Set<Id>();
+        // Collect all Social_Media_Account__c Ids for batch query
+        Set<Id> socialMediaAccountIds = new Set<Id>();
         for (Social_Media_Account__c acc : accounts) {
-            for (Social_Media_Content__c content : acc.Social_Media_Contents__r) {
+            socialMediaAccountIds.add(acc.Id);
+        }
+
+        // Query all Social_Media_Content__c for these accounts
+        Map<Id, List<Social_Media_Content__c>> accountIdToContents = new Map<Id, List<Social_Media_Content__c>>();
+        Set<Id> contentIds = new Set<Id>();
+        if (!socialMediaAccountIds.isEmpty()) {
+            List<Social_Media_Content__c> contents = [
+                SELECT Id, Social_Media_Account__c
+                FROM Social_Media_Content__c
+                WHERE Social_Media_Account__c IN :socialMediaAccountIds
+            ];
+            for (Social_Media_Content__c content : contents) {
                 contentIds.add(content.Id);
+                if (!accountIdToContents.containsKey(content.Social_Media_Account__c)) {
+                    accountIdToContents.put(content.Social_Media_Account__c, new List<Social_Media_Content__c>());
+                }
+                accountIdToContents.get(content.Social_Media_Account__c).add(content);
             }
         }
 
@@ -399,10 +519,11 @@ public with sharing class SocialMediaContentController {
             }
         }
 
-        // For each account, sum up the interactions of its contents
+        // For each account, sum up the interactions of all its contents
         for (Social_Media_Account__c acc : accounts) {
             Integer count = 0;
-            for (Social_Media_Content__c content : acc.Social_Media_Contents__r) {
+            List<Social_Media_Content__c> contents = accountIdToContents.containsKey(acc.Id) ? accountIdToContents.get(acc.Id) : new List<Social_Media_Content__c>();
+            for (Social_Media_Content__c content : contents) {
                 count += contentIdToInteractionCount.containsKey(content.Id) ? contentIdToInteractionCount.get(content.Id) : 0;
             }
             result.add(new Map<String, Object>{
@@ -411,28 +532,46 @@ public with sharing class SocialMediaContentController {
                 'id' => acc.Id
             });
         }
-        
+
         return result;
     }
-    
-    
+    public static Set<Id> getAllDescendantAccountIds(Id parentId) {
+    Set<Id> allIds = new Set<Id>{parentId};
+    List<Account> children = [SELECT Id FROM Account WHERE ParentId = :parentId];
+    for (Account child : children) {
+        allIds.addAll(getAllDescendantAccountIds(child.Id));
+    }
+    return allIds;
+}
+
+
     @AuraEnabled(cacheable=true)
     public static List<Map<String, Object>> getPlatformBreakdownByAccount(Id accountId) {
         List<Map<String, Object>> output = new List<Map<String, Object>>();
-        AggregateResult[] groupedResults = [
-            SELECT Content_Type__c contentType, COUNT(Id) total
-            FROM Social_Media_Content__c
-            WHERE Social_Media_Account__c = :accountId
-            GROUP BY Content_Type__c
+        // Get all Social Media Accounts for the given Account
+        List<Social_Media_Account__c> smAccounts = [
+            SELECT Id
+            FROM Social_Media_Account__c
+            WHERE Account__c = :accountId
         ];
-        
-        for (AggregateResult ar : groupedResults) {
-            output.add(new Map<String, Object>{
-                'label' => String.valueOf(ar.get('contentType')),
-                'value' => (Integer) ar.get('total')
-            });
+        Set<Id> smAccountIds = new Set<Id>();
+        for (Social_Media_Account__c sma : smAccounts) {
+            smAccountIds.add(sma.Id);
         }
-        
+        if (!smAccountIds.isEmpty()) {
+            AggregateResult[] groupedResults = [
+                SELECT Content_Type__c contentType, COUNT(Id) total
+                FROM Social_Media_Content__c
+                WHERE Social_Media_Account__c IN :smAccountIds
+                GROUP BY Content_Type__c
+            ];
+            for (AggregateResult ar : groupedResults) {
+                output.add(new Map<String, Object>{
+                    'label' => String.valueOf(ar.get('contentType')),
+                    'value' => (Integer) ar.get('total')
+                });
+            }
+        }
         return output;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
