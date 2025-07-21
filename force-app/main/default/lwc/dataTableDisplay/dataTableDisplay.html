@@ -21,8 +21,8 @@
 
                         <!-- Buttons -->
                         <div class="slds-grid slds-wrap slds-m-bottom_small">
-                            <lightning-button variant="base" label="Reply" class="slds-m-right_small"></lightning-button>
-                            <lightning-button variant="base" label="View Original" class="slds-m-right_small"></lightning-button>
+                            <lightning-button variant="base" label="Reply" class="slds-m-right_small" onclick={onreply}></lightning-button>
+                            <lightning-button variant="base" label="View Original" class="slds-m-right_small" onclick={onview}></lightning-button>
                             <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small" onclick={onclickedshowconverttoLead} data-id={item.id}></lightning-button>
                             <lightning-button variant="destructive" label="Create Case" onclick={onclickedshowconverttoCase} data-id={item.id}></lightning-button>
                         </div>
@@ -46,6 +46,19 @@
                                 onmodalclosed={ConvertTocase}>
                             </c-convert-case>
                         </template>
+
+
+                        <!-- ON View Orginal -->
+                         <template if:true={showViewOriginal}>
+                         <c-view-original 
+                            item-id={selectedLeadItemId} 
+                            item={item} 
+                            onmodalclosed={ViewOriginal}>
+                        </c-view-original>
+                        </template>
+
+                        <!-- REPLAY ACtion -->
+                         
 
                         <!-- AI Analysis -->
                        <template if:true={showAnalyis}>

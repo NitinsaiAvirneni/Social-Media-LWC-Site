@@ -1,3 +1,31 @@
 <template>
-    
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>{content.Name}</h2>
+            <button class="close-button" onclick={handleClose} title="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p><strong>Author:</strong> {content.Author_Name__c}</p>
+            <p><strong>Published:</strong> {content.Published_Date__c}</p>
+            <p><strong>Platform:</strong> {content.Platform__c} | <strong>Sentiment:</strong> {content.Sentiment__c}</p>
+            <div class="scroll-section">
+                <template if:true={interactions}>
+                    <template for:each={interactions} for:item="item">
+                        <div key={item.Id} class="card">
+                            <h3>{item.Author_Name__c}</h3>
+                            <p class="text">{item.Interaction_Text__c}</p>
+                            <p class="meta">Sentiment: {item.Sentiment__c} | {item.CreatedDate}</p>
+                            <template if:true={item.Has_Response__c}>
+                                <p class="response">Already Replied</p>
+                            </template>
+                            <template if:false={item.Has_Response__c}>
+                                <button class="reply-button" onclick={handleReply} data-id={item.Id}>Reply</button>
+                            </template>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </div>
 </template>

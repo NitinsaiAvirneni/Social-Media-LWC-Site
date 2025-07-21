@@ -1,0 +1,61 @@
+.container {
+    padding: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+    background: #f4f6f9;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.scroll-section {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+    border-left: 4px solid #5A9;
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.card .text {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.card .meta {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.reply-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #0070d2;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.reply-button:hover {
+    background-color: #005fb2;
+}
+
+.response {
+    color: green;
+    font-weight: bold;
+}

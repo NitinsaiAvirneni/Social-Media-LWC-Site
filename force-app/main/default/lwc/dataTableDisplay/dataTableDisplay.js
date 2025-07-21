@@ -21,7 +21,7 @@ export default class DataDisplayTale extends LightningElement {
 
     /////////////////////////////convert to lead/////////////////////////////////////////////////////
 
-        showconverttoLead = false;
+    showconverttoLead = false;
 
     onclickedshowconverttoLead(event) {
         this.showconverttoLead = !this.showconverttoLead; // Toggle showconverttoLead
@@ -39,11 +39,11 @@ export default class DataDisplayTale extends LightningElement {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        showconverttocase = false;
+    showconverttocase = false;
 
 
     /////////////////ConvertToCase//////////////////////
-     onclickedshowconverttoCase(event) {
+    onclickedshowconverttoCase(event) {
         this.showconverttocase = !this.showconverttocase; // Toggle showconverttoLead
         this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
     }
@@ -58,10 +58,24 @@ export default class DataDisplayTale extends LightningElement {
 
 
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////View Origninals//////////////////////////////////////////////////////////////////////////
+
+    showViewOriginal = false;
+    ViewOriginal(event) {
+        this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
+        if (event.detail === false) { // this event is from child to parent     
+            this.showViewOriginal = false; // Reset if false
+        } else {
+            this.showViewOriginal = true; // Open view if not false
+        }
+    }
+
+    onview() {
+        this.showViewOriginal = !this.showViewOriginal; // Toggle showViewOriginal
+    }
 
 
-//////////////////////to get data from apex class actively @wire/////////////////////////////////////////////////////
+    //////////////////////to get data from apex class actively @wire/////////////////////////////////////////////////////
 
     @wire(getDataFromAccount, { accountId: '$subaccountId' })
     wiredData({ error, data }) {

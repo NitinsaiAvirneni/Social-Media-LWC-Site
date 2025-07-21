@@ -65,7 +65,27 @@ public with sharing class SocialMediaContentController {
     //     return results;
     // }
 
+////////////////////////////to see all interactions with content via view buton /////////////////////////////////////
+ @AuraEnabled(cacheable=true)
+    public static Social_Media_Content__c getContentDetails(Id contentId) {
+        return [
+            SELECT Id, Name, Author_Name__c, Content_Text__c, Published_Date__c, Platform__c, Sentiment__c
+            FROM Social_Media_Content__c
+            WHERE Id = :contentId
+            LIMIT 1
+        ];
+    }
 
+    @AuraEnabled(cacheable=true)
+    public static List<Social_Media_Interaction__c> getInteractionsByContentId(Id contentId) {
+        return [
+            SELECT Id, Name, Author_Name__c, Interaction_Text__c, Sentiment__c, CreatedDate, Has_Response__c
+            FROM Social_Media_Interaction__c
+            WHERE Social_Media_Content__c = :contentId
+            ORDER BY CreatedDate DESC
+        ];
+    }
+    
     ///////////Insert to Leads with error handling and field validation///
     @AuraEnabled
     public static Lead createLead(Map<String, Object> lead) {
