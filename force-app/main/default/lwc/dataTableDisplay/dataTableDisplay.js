@@ -10,13 +10,47 @@ export default class DataDisplayTale extends LightningElement {
     @api custombuttonPlatform = '';
     @api subaccountId; // Account Id
     @api showAnalyis;/////////////Show AI Analysis
+    showconverttoLead =false;
+    //////////////////////track variables/////////////////////////////////////////////////////
+    @track SMData = []; // Social Media Data
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     test() {
         console.log("subaccount", this.subaccountId);
     }
-    @track SMData = [];
+
+   
+
+@track selectedLeadItemId; // Track selected lead item ID
+
+onclickedshowconverttoLead(event) {
+    this.showconverttoLead = !this.showconverttoLead; // Toggle showconverttoLead
+    this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
+}
+
+/////////////////////////////convert to lead and case/////////////////////////////////////////////////////
+ConvertToLead(event) {
+    if (event.detail === false) { // this event is from child to parent
+        this.showconverttoLead = false; // Reset if false
+    }
+    // Optionally, you can handle selectedLeadItemId here if needed
+    return this.showconverttoLead; // Return current state
+}
+
+
+/////////////////ConvertToCase//////////////////////
+ConvertToCase(event) {
+    this.selectedCaseItemId = event.itemId; // Get the selected item ID from the event
+    const customEvent = new CustomEvent('converttocase', {
+        detail: {
+            selectedItem: this.selectedCaseItemId,
+        }
+    });
+    this.dispatchEvent(customEvent);
+}
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
     @wire(getDataFromAccount, { accountId: '$subaccountId' })

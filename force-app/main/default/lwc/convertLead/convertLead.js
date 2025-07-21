@@ -4,8 +4,9 @@ import { LightningElement, api, track } from 'lwc';
 import createLead from '@salesforce/apex/SocialMediaContentController.createLead';
 
 export default class ConvertLead extends LightningElement {
-    @api showModal = false;
-    @api leadData;
+    @api showModal = false;//
+    @api leadData; // Data passed from the parent component
+
 
     @track firstName = '';
     @track lastName = '';
@@ -13,6 +14,8 @@ export default class ConvertLead extends LightningElement {
     @track title = '';
     @track email = '';
     @track phone = '';
+
+    show = true;
 
     connectedCallback() {
         if (this.leadData) {
@@ -29,18 +32,23 @@ export default class ConvertLead extends LightningElement {
         return `${this.firstName} ${this.lastName}`;
     }
 
+    
+
+    handleCancel() {
+        this.show = false;
+        this.showModal = false;
+        this.dispatchEvent(new CustomEvent('modalclosed', { detail: false }));
+        console.log('Modal closed');
+    }
+
+
+
     handleConvert() {
         this.showModal = true;
     }
 
-    handleCancel() {
-        this.showModal = false;
-        this.dispatchEvent(new CustomEvent('cancel'));
-    }
-
     closeModal() {
         this.showModal = false;
-        this.dispatchEvent(new CustomEvent('close'));
     }
 
     handleChange(event) {

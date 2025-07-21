@@ -1,0 +1,26 @@
+.custom-modal {
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    background: #f4f6fc;
+}
+
+.custom-header {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.custom-footer {
+    background: #f4f6fc;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.slds-modal__close {
+    font-size: 1.5rem;
+    color: #050505;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
