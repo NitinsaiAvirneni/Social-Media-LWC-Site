@@ -30,6 +30,9 @@ wiredData({ error, data }) {
         this.SMData = data.map(record => ({
             ...record,
             showChild: false
+            ,
+            showReply: false // Initialize showReply to false
+
         }));
         console.log('Fetched SMData:', JSON.stringify(this.SMData, null, 2));
     } else if (error) {
@@ -64,9 +67,47 @@ HandleOnView(event) {
     });
   
 }
+
+
+HandleOnReply(event) {
+    const clickedId = event.currentTarget.dataset.id;
+    console.log('Clicked ID:', clickedId);
+
+    this.SMData = this.SMData.map(record => {
+        // Check if record has 'Id' or 'id' property
+        const recordId = record.Id || record.id;
+        console.log('Record ID:', recordId);
+        return {
+            ...record,
+            showReply: recordId === clickedId ? !record.showReply : false
+        };
+    });
+  
+}
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /////////////////reply button//////////////////////
+    showReplyCard = false;
+    replyText = ""; 
 
+
+
+    onReplyCancel(event) {
+        this.HandleOnReply(event);
+    }
+
+    onReplySubmit() {
+        var replyInputValues = this.template.querySelectorAll("lightning-textarea");
+
+        replyInputValues.forEach(function (elementVal) {
+            if (elementVal.name == 'replyField') {
+                this.replyText = elementVal.value;
+            } 
+        }, this);
+
+        console.log("this is reply text",this.replyText)
+        this.showReplyCard = !this.showReplyCard;
+    }
 
     /////////////////////////////convert to lead/////////////////////////////////////////////////////
 

@@ -21,20 +21,33 @@
                         <p class="slds-m-bottom_small">{item.message}</p>
 
                         <!-- Buttons -->
-                        <div class="slds-grid slds-wrap slds-m-bottom_small">
+                        <div class="slds-grid slds-wrap ">
                             <lightning-button variant="base" label="Reply" class="slds-m-right_small"
-                                onclick={onreply}></lightning-button>
+                                onclick={HandleOnReply} data-id={item.id}></lightning-button>
                             <lightning-button variant="base" label="View Comments" class="slds-m-right_small"
                                 onclick={HandleOnView} data-id={item.id}></lightning-button>
                             <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small"
                                 onclick={onclickedshowconverttoLead} data-id={item.id}></lightning-button>
                             <lightning-button variant="destructive" label="Create Case"
                                 onclick={onclickedshowconverttoCase} data-id={item.id}></lightning-button>
-                            <lightning-button variant="neutral" label={item.id} onclick={handleTest}
-                                data-id={item.id}></lightning-button>
+                            
                         </div>
 
-                        
+                        <!-- Reply Card -->
+                        <template if:true={item.showReply}>
+                            <div>
+                                <lightning-card>
+                                    <!-- <lightning-input type="text" label="Reply" placeholder="reply here..."></lightning-input> -->
+                                    <lightning-textarea label="Reply" name="replyField" value={replyText} placeholder="reply here..." rows="5"
+                                        class="slds-size_1-of-2"></lightning-textarea>
+                                    <div class="slds-grid slds-wrap slds-m-top_small">
+                                        <lightning-button variant="brand" label="Submit" onclick={onReplySubmit}></lightning-button>
+                                        <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
+                                            onclick={onReplyCancel} data-id={item.id} ></lightning-button>
+                                    </div>
+                                </lightning-card>
+                            </div>
+                        </template>
 
                         <!-- Convert to Lead -->
                         <template if:true={showconverttoLead}>
@@ -55,7 +68,7 @@
                 <!-- View Original -->
                 <template if:true={item.showChild}>
                   
-                        <c-view-original ></c-view-original>
+                        <c-view-original content-id={item.id}></c-view-original>
                   
                 </template>
 

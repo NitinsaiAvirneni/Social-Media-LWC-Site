@@ -1,4 +1,6 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, track} from 'lwc';
+import runSocialMediaSync from '@salesforce/apex/SocialMediaController.runSocialMediaSync';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class socialMediaHome extends LightningElement {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////c/dataDisplayTale
@@ -8,6 +10,7 @@ export default class socialMediaHome extends LightningElement {
     selectedDate;
     selectedItem;
     searchTerm;
+    @ track showParentModal = false;
     custombuttonPlatform;
     subaccountId ;
 ////////////////////ai analysis variable/////////////////////////////////////////////////////
@@ -27,7 +30,29 @@ setchildaccountid(event) {
     }
 
 // this is a test function to check the analytics of the social media site                   ///these are for buttons in the header
+openParentModal() {
+        this.showParentModal = true;
+        this.showToast('Info', 'Batch class is running...');
+        runSocialMediaSync()
+        .then(() => {
+                console.log('Social media sync completed');
+            })
+            .catch(error => {
+                console.error('Error syncing:', error);
+            });
 
+        // Use setTimeout to wait for modal DOM to render
+        setTimeout(() => this.loadParentChart(), 0);
+    }
+
+ showToast(title, message, variant) {
+        const evt = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(evt);
+    }
 
 testSchedule(){
     console.log('Social Media Site Test Schedule');

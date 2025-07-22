@@ -2,7 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import getDataFromContent from '@salesforce/apex/SocialMediaContentController.getDataFromContent';
 
 export default class ViewOriginal extends LightningElement {
-    @api contentId ; // Set this dynamically as needed
+    @api v ; // Set this dynamically as needed
     data = [];
     error;
 
