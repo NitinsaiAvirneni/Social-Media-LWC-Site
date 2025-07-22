@@ -9,6 +9,7 @@
                             <div class="slds-col slds-size_1-of-2">
                                 <strong>{item.author}</strong>
                                 <lightning-badge label={item.source} class="slds-m-left_small"></lightning-badge>
+                                <lightning-badge  label={item.id}  class="slds-m-left_small"></lightning-badge>
                                 <!-- <span class="slds-text-color_success slds-m-left_x-small">{item.sentiment}</span> -->
                             </div>
                             <div class="slds-col slds-size_1-of-2 slds-text-align_right">
@@ -21,18 +22,18 @@
                         <p class="slds-m-bottom_small">{item.message}</p>
 
                         <!-- Buttons -->
-                        <div class="slds-grid slds-wrap ">
+                        <div class="slds-grid slds-wrap slds-m-bottom_small">
                             <lightning-button variant="base" label="Reply" class="slds-m-right_small"
                                 onclick={HandleOnReply} data-id={item.id}></lightning-button>
                             <lightning-button variant="base" label="View Comments" class="slds-m-right_small"
                                 onclick={HandleOnView} data-id={item.id}></lightning-button>
                             <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small"
-                                onclick={onclickedshowconverttoLead} data-id={item.id}></lightning-button>
+                                onclick={HandleOnLead} data-id={item.id}></lightning-button>
                             <lightning-button variant="destructive" label="Create Case"
-                                onclick={onclickedshowconverttoCase} data-id={item.id}></lightning-button>
+                                onclick={HandleOnCase} data-id={item.id}></lightning-button>
                             
                         </div>
-
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
                         <!-- Reply Card -->
                         <template if:true={item.showReply}>
                             <div>
@@ -50,20 +51,18 @@
                         </template>
 
                         <!-- Convert to Lead -->
-                        <template if:true={showconverttoLead}>
-                            <template if:true={selectedLeadItemId}>
+                            <template if:true={item.showLead}>
                                 <c-convert-lead item-id={selectedLeadItemId} item={item} onmodalclosed={ConvertToLead}>
                                 </c-convert-lead>
                             </template>
-                        </template>
+                   
 
                         <!-- Convert to Case -->
-                        <template if:true={showconverttocase}>
-                        <template if:true={selectedCaseItemId}>
+                        <template if:true={item.showCase}>
                             <c-convert-case item-id={selectedCaseItemId} item={item} onmodalclosed={ConvertTocase}>
                             </c-convert-case>
                         </template>
-                    </template>
+                
 
                 <!-- View Original -->
                 <template if:true={item.showChild}>
@@ -72,7 +71,7 @@
                   
                 </template>
 
-
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
                 <!-- REPLAY ACtion -->
 
 

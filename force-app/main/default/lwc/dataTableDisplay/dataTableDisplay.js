@@ -29,9 +29,10 @@ wiredData({ error, data }) {
     if (data) {
         this.SMData = data.map(record => ({
             ...record,
-            showChild: false
-            ,
-            showReply: false // Initialize showReply to false
+            showChild: false,
+            showReply: false, // Initialize showReply to false
+            showCase: false, // Initialize showCase to false
+            showLead: false // Initialize showLead to false
 
         }));
         console.log('Fetched SMData:', JSON.stringify(this.SMData, null, 2));
@@ -40,26 +41,12 @@ wiredData({ error, data }) {
     }
 }
 
-// HandleOnView(event) {
-//     const clickedId = event.currentTarget.dataset.id;
-
-//     this.SMData = this.SMData.map(record => ({
-//         ...record,
-//         showChild: record.Id === clickedId ? !record.showChild : false
-//     }));
-
-//     console.log('Toggled ID:', clickedId);
-// }
-
 
 HandleOnView(event) {
     const clickedId = event.currentTarget.dataset.id;
-    console.log('Clicked ID:', clickedId);
-
     this.SMData = this.SMData.map(record => {
         // Check if record has 'Id' or 'id' property
         const recordId = record.Id || record.id;
-        console.log('Record ID:', recordId);
         return {
             ...record,
             showChild: recordId === clickedId ? !record.showChild : false
@@ -71,15 +58,40 @@ HandleOnView(event) {
 
 HandleOnReply(event) {
     const clickedId = event.currentTarget.dataset.id;
-    console.log('Clicked ID:', clickedId);
+    this.SMData = this.SMData.map(record => {
+        // Check if record has 'Id' or 'id' property
+        const recordId = record.Id || record.id;
+        return {
+            ...record,
+            showReply: recordId === clickedId ? !record.showReply : false
+        };
+    });
+  
+}
+
+HandleOnLead(event) {
+    const clickedId = event.currentTarget.dataset.id;
 
     this.SMData = this.SMData.map(record => {
         // Check if record has 'Id' or 'id' property
         const recordId = record.Id || record.id;
-        console.log('Record ID:', recordId);
         return {
             ...record,
-            showReply: recordId === clickedId ? !record.showReply : false
+            showLead: recordId === clickedId ? !record.showLead : false
+        };
+    });
+  
+}
+
+HandleOnCase(event) {
+    const clickedId = event.currentTarget.dataset.id;
+
+    this.SMData = this.SMData.map(record => {
+        // Check if record has 'Id' or 'id' property
+        const recordId = record.Id || record.id;
+        return {
+            ...record,
+            showCase: recordId === clickedId ? !record.showCase : false
         };
     });
   
