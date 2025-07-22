@@ -25,7 +25,7 @@
                             <lightning-button variant="base" label="Reply" class="slds-m-right_small"
                                 onclick={onreply}></lightning-button>
                             <lightning-button variant="base" label="View Comments" class="slds-m-right_small"
-                                onclick={onview}></lightning-button>
+                                onclick={HandleOnView} data-id={item.id}></lightning-button>
                             <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small"
                                 onclick={onclickedshowconverttoLead} data-id={item.id}></lightning-button>
                             <lightning-button variant="destructive" label="Create Case"
@@ -34,6 +34,7 @@
                                 data-id={item.id}></lightning-button>
                         </div>
 
+                        
 
                         <!-- Convert to Lead -->
                         <template if:true={showconverttoLead}>
@@ -52,10 +53,10 @@
                     </template>
 
                 <!-- View Original -->
-                <template if:true={showViewOriginal}>
-                    <template if:true={selectedViewOriginalId}>
-                        <c-view-original record-id={item.id}></c-view-original>
-                    </template>
+                <template if:true={item.showChild}>
+                  
+                        <c-view-original ></c-view-original>
+                  
                 </template>
 
 

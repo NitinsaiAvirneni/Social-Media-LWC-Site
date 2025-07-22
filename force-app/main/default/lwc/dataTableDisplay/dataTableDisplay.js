@@ -23,6 +23,48 @@ export default class DataDisplayTale extends LightningElement {
 test(event){
 console.log("this is ",event.item.id)
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  @wire(getDataFromAccount, { accountId: '$subaccountId' })
+wiredData({ error, data }) {
+    if (data) {
+        this.SMData = data.map(record => ({
+            ...record,
+            showChild: false
+        }));
+        console.log('Fetched SMData:', JSON.stringify(this.SMData, null, 2));
+    } else if (error) {
+        console.error('Error fetching SMData:', error);
+    }
+}
+
+// HandleOnView(event) {
+//     const clickedId = event.currentTarget.dataset.id;
+
+//     this.SMData = this.SMData.map(record => ({
+//         ...record,
+//         showChild: record.Id === clickedId ? !record.showChild : false
+//     }));
+
+//     console.log('Toggled ID:', clickedId);
+// }
+
+
+HandleOnView(event) {
+    const clickedId = event.currentTarget.dataset.id;
+    console.log('Clicked ID:', clickedId);
+
+    this.SMData = this.SMData.map(record => {
+        // Check if record has 'Id' or 'id' property
+        const recordId = record.Id || record.id;
+        console.log('Record ID:', recordId);
+        return {
+            ...record,
+            showChild: recordId === clickedId ? !record.showChild : false
+        };
+    });
+  
+}
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -55,7 +97,9 @@ console.log("this is ",event.item.id)
         this.showconverttocase = !this.showconverttocase; // Toggle showconverttoLead
         this.selectedLeadItemId = event.target.dataset.id; // Use event.detail for -parent to child communication
     }
+    ///////button to on/off child component
 
+    ///close child component from parent
     ConvertTocase(event) {
         if (event.detail === false) { // this event is from child to parent
             this.showconverttocase = false; // Reset if false
@@ -70,31 +114,16 @@ console.log("this is ",event.item.id)
 
     showViewOriginal = false;
     ViewOriginal(event) {
+        this.showViewOriginal = !this.showViewOriginal; // Toggle showViewOriginal
         this.selectedViewOriginalId = event.target.dataset.id; // Use event.detail for -parent to child communication
-        if (event.detail === false) { // this event is from child to parent     
-            this.showViewOriginal = false; // Reset if false
-        } else {
-            this.showViewOriginal = true; // Open view if not false
-        }
+      
     }
 
-    onview() {
-        this.showViewOriginal = !this.showViewOriginal; // Toggle showViewOriginal
-    }
+    
 
 
     //////////////////////to get data from apex class actively @wire/////////////////////////////////////////////////////
-
-    @wire(getDataFromAccount, { accountId: '$subaccountId' })
-    wiredData({ error, data }) {
-        if (data) {
-            this.SMData = data;
-            console.log('Updated SMData:', JSON.stringify(this.SMData, null, 2));
-        } else if (error) {
-            console.error('Error fetching SMData:', error);
-        }
-    }
-
+   
 
 
 

@@ -1,0 +1,23 @@
+<template>
+    <lightning-card title="Show Box Only for Selected Row">
+        <template for:each={records} for:item="item">
+            <div key={item.id} class="slds-box slds-m-around_small">
+                <div class="slds-grid slds-wrap slds-grid_align-spread">
+                    <div>{item.name}</div>
+                    <lightning-button 
+                        label="Show Details" 
+                        data-id={item.id}
+                        onclick={handleShowBox}>
+                    </lightning-button>
+                </div>
+
+                <!-- ✅ Only show box for selected item -->
+                <template if:true={item.showDetails}>
+                    <div class="slds-box slds-theme_info slds-m-top_small">
+                        <strong>Details:</strong> {item.description}
+                    </div>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+</template>
