@@ -1,30 +1,23 @@
-import { LightningElement, api, wire, track } from 'lwc';
-import getContentDetails from '@salesforce/apex/SocialMediaContentController.getContentDetails';
-import getInteractionsByContentId from '@salesforce/apex/SocialMediaContentController.getInteractionsByContentId';
+import { LightningElement, api, wire } from 'lwc';
+import getDataFromContent from '@salesforce/apex/SocialMediaContentController.getDataFromContent';
 
-export default class SocialMediaContentViewer extends LightningElement {
-    @api recordId; // passed from record page or parent
-    @track content = {};
-    @track interactions = [];
-    viewOriginal=true;
+export default class ViewOriginal extends LightningElement {
+    @api contentId = 'a05NS00000SrMT6YAN'; // Set this dynamically as needed
+    data = [];
+    error;
 
-    handleClose() {
-        this.dispatchEvent(new CustomEvent('modalclosed', { detail: false }));
+    @wire(getDataFromContent, { contentId: '$contentId' })
+    wiredData({ data, error }) {
+        if (data) {
+            this.data = data;
+            this.error = undefined;
+        } else if (error) {
+            this.error = error;
+            this.data = [];
+        }
     }
 
-    @wire(getContentDetails, { contentId: '$recordId' })
-    wiredContent({ error, data }) {
-        if (data) this.content = data;
-    }
-
-    @wire(getInteractionsByContentId, { contentId: '$recordId' })
-    wiredInteractions({ error, data }) {
-        if (data) this.interactions = data;
-    }
-
-    handleReply(event) {
-        const id = event.target.dataset.id;
-        alert('Reply to interaction ID: ' + id);
-        // You could open a modal or redirect to a reply form here.
+    get hasData() {
+        return this.data && this.data.length > 0;
     }
 }

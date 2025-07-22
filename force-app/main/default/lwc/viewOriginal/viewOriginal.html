@@ -1,31 +1,33 @@
 <template>
-    <div class="modal-backdrop"></div>
-    <div class="modal-container">
-        <div class="modal-header">
-            <h2>{content.Name}</h2>
-            <button class="close-button" onclick={handleClose} title="Close">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p><strong>Author:</strong> {content.Author_Name__c}</p>
-            <p><strong>Published:</strong> {content.Published_Date__c}</p>
-            <p><strong>Platform:</strong> {content.Platform__c} | <strong>Sentiment:</strong> {content.Sentiment__c}</p>
-            <div class="scroll-section">
-                <template if:true={interactions}>
-                    <template for:each={interactions} for:item="item">
-                        <div key={item.Id} class="card">
-                            <h3>{item.Author_Name__c}</h3>
-                            <p class="text">{item.Interaction_Text__c}</p>
-                            <p class="meta">Sentiment: {item.Sentiment__c} | {item.CreatedDate}</p>
-                            <template if:true={item.Has_Response__c}>
-                                <p class="response">Already Replied</p>
-                            </template>
-                            <template if:false={item.Has_Response__c}>
-                                <button class="reply-button" onclick={handleReply} data-id={item.Id}>Reply</button>
-                            </template>
-                        </div>
-                    </template>
-                </template>
+    <lightning-card title="Social Media Content">
+        <template if:true={hasData}>
+            <div style="max-height: 400px; overflow-y: auto; padding: 1rem;">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Source</th>
+                            <th>Date</th>
+                            <th>Sentiment</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={data} for:item="row">
+                            <tr key={row.id}>
+                                <td>{row.author}</td>
+                                <td>{row.source}</td>
+                                <td>{row.date}</td>
+                                <td>{row.sentiment}</td>
+                                <td>{row.message}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </div>
+        </template>
+        <template if:true={error}>
+            <div class="slds-text-color_error slds-m-around_medium">Error: {error.body.message}</div>
+        </template>
+    </lightning-card>
 </template>

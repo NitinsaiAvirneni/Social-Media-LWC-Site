@@ -1,70 +1,84 @@
 public with sharing class SocialMediaContentController {
     
-    // public class FakeDataWrapper {
-    //     @AuraEnabled public String id;
-    //     @AuraEnabled public String author;
-    //     @AuraEnabled public String source;
-    //     @AuraEnabled public String datee;
-    //     @AuraEnabled public String sentiment;
-    //     @AuraEnabled public String message;
-    //     @AuraEnabled public Analysis analysis;
-    // }
-    
-    // public class Analysis {
-    //     @AuraEnabled public String contentType;
-    //     @AuraEnabled public String intent;
-    //     @AuraEnabled public String urgency;
-    //     @AuraEnabled public Integer engagement;
-    //     @AuraEnabled public Integer confidence;
-    //     @AuraEnabled public String action;
-    // }
+    @AuraEnabled(cacheable=true)
+    public static Map<String, List<Account>> getVisitsByAccountId(Id accountId) {
+        Map<String, List<Account>> groupedAccounts = new Map<String, List<Account>>();
 
-     
-    
-    // @AuraEnabled(cacheable=true)
-    // public static List<FakeDataWrapper> getSocialContent() {
-    //     List<FakeDataWrapper> results = new List<FakeDataWrapper>();
-        
-    //     // Query Social Media Content with related Interaction and AI Analysis
-    //     List<Social_Media_Content__c> contents = [
-    //         SELECT Id, Author_Name__c, Social_Media_Account__c,Platform__c, Published_Date__c, Sentiment__c, Content_Text__c,
-    //             (SELECT Id, Sentiment__c, Intent_Category__c, Urgency_Level__c, Interaction_Text__c
-    //              FROM Social_Media_Interactions__r
-                 
-    //              LIMIT 1)
-    //         FROM Social_Media_Content__c
-    //         WHERE Published_Date__c != NULL
-    //         ORDER BY Published_Date__c DESC
-    //         LIMIT 10
-    //     ];
-        
-    //     for (Social_Media_Content__c content : contents) {
-    //         if (content.Social_Media_Interactions__r.isEmpty()) continue;
-            
-    //         Social_Media_Interaction__c interaction = content.Social_Media_Interactions__r[0];
-    //         FakeDataWrapper wrapper = new FakeDataWrapper();
-    //         //////////////////////// Populate the wrapper with content and interaction data in SMM /////////////////////////////////////
-    //         wrapper.id = content.Id != null ? content.Id : 'No data';
-    //         wrapper.author = String.isNotBlank(content.Author_Name__c) ? content.Author_Name__c : 'No data';
-    //         wrapper.source = String.isNotBlank(content.Platform__c) ? content.Platform__c : 'No data';
-    //         wrapper.datee = content.Published_Date__c != null ? String.valueOf(content.Published_Date__c) : 'No data';
-    //         wrapper.sentiment = String.isNotBlank(content.Sentiment__c) ? content.Sentiment__c : 'No data';
-    //         wrapper.message = String.isNotBlank(content.Content_Text__c) ? content.Content_Text__c : 'No data';
-    //         ///////////////////////////////////////////// AI Analysis block/////////////////////////////////////////////////////////////
-    //         Analysis analysis = new Analysis();
-    //         analysis.contentType = content.Content_Type__c;
-    //         analysis.intent = interaction.Intent_Category__c;
-    //         analysis.urgency = interaction.Urgency_Level__c;
-    //         analysis.engagement = 10 + Math.mod(Crypto.getRandomInteger(), 20); // Simulated engagement
-    //         analysis.action = getRecommendedAction(interaction.Urgency_Level__c, interaction.Intent_Category__c);
-    //         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //         wrapper.analysis = analysis;
-    //         results.add(wrapper);
-    //     }
-        
-    //     return results;
-    // }
+        List<Account> accounts = [
+            SELECT Id, Name, CreatedDate
+            FROM Account
+            WHERE ParentId = :accountId
+            ORDER BY CreatedDate DESC
+        ];
 
+        for (Account acc : accounts) {
+            String dateKey = acc.CreatedDate != null ? String.valueOf(acc.CreatedDate) : 'No Date';
+            if (!groupedAccounts.containsKey(dateKey)) {
+                groupedAccounts.put(dateKey, new List<Account>());
+            }
+            groupedAccounts.get(dateKey).add(acc);
+        }
+
+        return groupedAccounts;
+    }
+/////////////////////////////////test///
+@AuraEnabled(cacheable=true)
+public static Map<String, String> getLookups(String recordId, String objectApiName) {
+    Map<String, String> lookups = new Map<String, String>();
+
+    Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectApiName);
+    if (objType == null) return lookups;
+
+    Map<String, Schema.SObjectField> fieldsMap = objType.getDescribe().fields.getMap();
+    List<String> refFieldNames = new List<String>();
+
+    for (String fieldName : fieldsMap.keySet()) {
+        Schema.DescribeFieldResult fieldDesc = fieldsMap.get(fieldName).getDescribe();
+        if (fieldDesc.getType() == Schema.DisplayType.REFERENCE) {
+            refFieldNames.add(fieldName);
+        }
+    }
+
+    if (refFieldNames.isEmpty()) return lookups;
+
+    // Build dynamic SOQL with relationship fields for lookups
+    List<String> selectFields = new List<String>();
+    for (String refField : refFieldNames) {
+        // For Social_Media_Content__c, get Name field from parent
+        if (refField == 'Social_Media_Content__c') {
+            selectFields.add('Social_Media_Content__r.Name');
+        } else {
+            selectFields.add(refField);
+        }
+    }
+    String soql = 'SELECT ' + String.join(selectFields, ', ') + ' FROM ' + objectApiName + ' WHERE Id = :recordId LIMIT 1';
+    List<SObject> records = Database.query(soql);
+    if (records.isEmpty()) {
+        return lookups;
+    }
+    SObject record = records[0];
+
+    for (String refField : refFieldNames) {
+        Schema.DescribeFieldResult fieldDesc = fieldsMap.get(refField).getDescribe();
+        String label = fieldDesc.getLabel();
+        if (refField == 'Social_Media_Content__c') {
+            // Get parent Social Media Content Name
+            SObject parentContent = (SObject)record.getSObject('Social_Media_Content__r');
+            if (parentContent != null && parentContent.get('Name') != null) {
+                lookups.put(label, (String)parentContent.get('Name'));
+            }
+        } else {
+            Object refValue = record.get(refField);
+            if (refValue != null && refValue instanceof SObject) {
+                SObject refRecord = (SObject) refValue;
+                String parentName = (String)refRecord.get('Name');
+                lookups.put(label, parentName);
+            }
+        }
+    }
+
+    return lookups;
+}
 ////////////////////////////to see all interactions with content via view buton /////////////////////////////////////
  @AuraEnabled(cacheable=true)
     public static Social_Media_Content__c getContentDetails(Id contentId) {
