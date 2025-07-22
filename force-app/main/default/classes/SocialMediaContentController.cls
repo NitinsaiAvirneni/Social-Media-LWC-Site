@@ -1,84 +1,56 @@
 public with sharing class SocialMediaContentController {
     
-    @AuraEnabled(cacheable=true)
-    public static Map<String, List<Account>> getVisitsByAccountId(Id accountId) {
-        Map<String, List<Account>> groupedAccounts = new Map<String, List<Account>>();
-
-        List<Account> accounts = [
-            SELECT Id, Name, CreatedDate
-            FROM Account
-            WHERE ParentId = :accountId
-            ORDER BY CreatedDate DESC
-        ];
-
-        for (Account acc : accounts) {
-            String dateKey = acc.CreatedDate != null ? String.valueOf(acc.CreatedDate) : 'No Date';
-            if (!groupedAccounts.containsKey(dateKey)) {
-                groupedAccounts.put(dateKey, new List<Account>());
-            }
-            groupedAccounts.get(dateKey).add(acc);
-        }
-
-        return groupedAccounts;
-    }
-/////////////////////////////////test///
 @AuraEnabled(cacheable=true)
-public static Map<String, String> getLookups(String recordId, String objectApiName) {
-    Map<String, String> lookups = new Map<String, String>();
+public static List<Map<String, Object>> getDataFromContent(Id contentId) {
+    List<Map<String, Object>> result = new List<Map<String, Object>>();
 
-    Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectApiName);
-    if (objType == null) return lookups;
+    // Query Social_Media_Interaction__c where the lookup matches the given contentId
+    List<Social_Media_Interaction__c> interactions = [
+        SELECT Id, Sentiment__c, Urgency_Level__c, Interaction_Text__c, CreatedDate,
+               Social_Media_Content__r.Id,
+               Social_Media_Content__r.Author_Name__c,
+               Social_Media_Content__r.Author_Platform_ID__c,
+               Social_Media_Content__r.Platform__c,
+               Social_Media_Content__r.Content_Text__c,
+               Social_Media_Content__r.Content_Type__c,
+               Social_Media_Content__r.Sentiment__c,
+               Social_Media_Content__r.Published_Date__c,
+               Social_Media_Content__r.Engagement_Score__c
+        FROM Social_Media_Interaction__c
+        WHERE Social_Media_Content__c = :contentId
+    ];
 
-    Map<String, Schema.SObjectField> fieldsMap = objType.getDescribe().fields.getMap();
-    List<String> refFieldNames = new List<String>();
+    for (Social_Media_Interaction__c i : interactions) {
+        Map<String, Object> row = new Map<String, Object>();
 
-    for (String fieldName : fieldsMap.keySet()) {
-        Schema.DescribeFieldResult fieldDesc = fieldsMap.get(fieldName).getDescribe();
-        if (fieldDesc.getType() == Schema.DisplayType.REFERENCE) {
-            refFieldNames.add(fieldName);
-        }
+        Social_Media_Content__c c = i.Social_Media_Content__r;
+
+        /////////////////////////////////////// SMM Data block //////////////////////////////////////
+        row.put('id', c.Id != null ? c.Id : 'No data');
+        row.put('author', String.isNotBlank(c.Author_Name__c) ? c.Author_Name__c : 'No data');
+        row.put('source', String.isNotBlank(c.Platform__c) ? c.Platform__c : 'No data');
+        row.put('date', c.Published_Date__c != null ? String.valueOf(c.Published_Date__c) : 'No data');
+        row.put('sentiment', String.isNotBlank(c.Sentiment__c) ? c.Sentiment__c.toLowerCase() : 'No data');
+        row.put('message', String.isNotBlank(c.Content_Text__c) ? c.Content_Text__c : 'No data');
+
+        /////////////////////////////////////// AI Analysis block //////////////////////////////////////
+        Map<String, Object> analysis = new Map<String, Object>();
+        analysis.put('contentType', c.Content_Type__c);
+        analysis.put('intent', 'Purchase Interest'); // Fallback
+        analysis.put('urgency', String.isNotBlank(i.Urgency_Level__c) ? i.Urgency_Level__c : 'Medium');
+        analysis.put('engagement', c.Engagement_Score__c != null ? c.Engagement_Score__c : 0);
+        analysis.put('confidence', 87); // Static
+        analysis.put('action', 'Follow up within 2 hours');
+
+        row.put('analysis', analysis);
+        result.add(row);
     }
 
-    if (refFieldNames.isEmpty()) return lookups;
-
-    // Build dynamic SOQL with relationship fields for lookups
-    List<String> selectFields = new List<String>();
-    for (String refField : refFieldNames) {
-        // For Social_Media_Content__c, get Name field from parent
-        if (refField == 'Social_Media_Content__c') {
-            selectFields.add('Social_Media_Content__r.Name');
-        } else {
-            selectFields.add(refField);
-        }
-    }
-    String soql = 'SELECT ' + String.join(selectFields, ', ') + ' FROM ' + objectApiName + ' WHERE Id = :recordId LIMIT 1';
-    List<SObject> records = Database.query(soql);
-    if (records.isEmpty()) {
-        return lookups;
-    }
-    SObject record = records[0];
-
-    for (String refField : refFieldNames) {
-        Schema.DescribeFieldResult fieldDesc = fieldsMap.get(refField).getDescribe();
-        String label = fieldDesc.getLabel();
-        if (refField == 'Social_Media_Content__c') {
-            // Get parent Social Media Content Name
-            SObject parentContent = (SObject)record.getSObject('Social_Media_Content__r');
-            if (parentContent != null && parentContent.get('Name') != null) {
-                lookups.put(label, (String)parentContent.get('Name'));
-            }
-        } else {
-            Object refValue = record.get(refField);
-            if (refValue != null && refValue instanceof SObject) {
-                SObject refRecord = (SObject) refValue;
-                String parentName = (String)refRecord.get('Name');
-                lookups.put(label, parentName);
-            }
-        }
-    }
-
-    return lookups;
+    return result;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////to see all interactions with content via view buton /////////////////////////////////////
  @AuraEnabled(cacheable=true)
     public static Social_Media_Content__c getContentDetails(Id contentId) {

@@ -13,11 +13,18 @@ export default class DataDisplayTale extends LightningElement {
     //////////////////////track variables/////////////////////////////////////////////////////
     @track SMData = []; // Social Media Data
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+    /////////////////////////////////////////show only to select table variables
 
     @track selectedLeadItemId; // Track selected lead item ID
+    @track selectedCaseItemId; // Track selected case item ID
+    @track selectedViewOriginalId; // Track selected item ID for view original
+
+
+test(event){
+console.log("this is ",event.item.id)
+}
+
+
 
     /////////////////////////////convert to lead/////////////////////////////////////////////////////
 
@@ -25,7 +32,8 @@ export default class DataDisplayTale extends LightningElement {
 
     onclickedshowconverttoLead(event) {
         this.showconverttoLead = !this.showconverttoLead; // Toggle showconverttoLead
-        this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
+        
+        this.selectedLeadItemId = event.target.dataset.id; // Use event.detail for -parent to child communication
     }
 
     ConvertToLead(event) {
@@ -45,7 +53,7 @@ export default class DataDisplayTale extends LightningElement {
     /////////////////ConvertToCase//////////////////////
     onclickedshowconverttoCase(event) {
         this.showconverttocase = !this.showconverttocase; // Toggle showconverttoLead
-        this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
+        this.selectedLeadItemId = event.target.dataset.id; // Use event.detail for -parent to child communication
     }
 
     ConvertTocase(event) {
@@ -62,7 +70,7 @@ export default class DataDisplayTale extends LightningElement {
 
     showViewOriginal = false;
     ViewOriginal(event) {
-        this.selectedLeadItemId = event.detail?.itemId; // Use event.detail for -parent to child communication
+        this.selectedViewOriginalId = event.target.dataset.id; // Use event.detail for -parent to child communication
         if (event.detail === false) { // this event is from child to parent     
             this.showViewOriginal = false; // Reset if false
         } else {

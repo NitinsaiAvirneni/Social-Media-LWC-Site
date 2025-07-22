@@ -7,9 +7,18 @@
                         <tr>
                             <th>Author</th>
                             <th>Source</th>
-                            <th>Date</th>
+                            <th>
+                                <lightning-button 
+                                    label="Date" 
+                                    variant="base" 
+                                    onclick={handleSort}
+                                    icon-name="utility:sort"
+                                    class="slds-p-right_xx-small"
+                                ></lightning-button>
+                            </th>
                             <th>Sentiment</th>
                             <th>Message</th>
+                            <th>Reply</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -17,9 +26,17 @@
                             <tr key={row.id}>
                                 <td>{row.author}</td>
                                 <td>{row.source}</td>
-                                <td>{row.date}</td>
+                                <td>{row.Published_Date__c}</td>
                                 <td>{row.sentiment}</td>
                                 <td>{row.message}</td>
+                                <td>
+                                    <lightning-button 
+                                        label="Reply" 
+                                        variant="brand" 
+                                        onclick={handleReply} 
+                                        data-id={row.id}
+                                    ></lightning-button>
+                                </td>
                             </tr>
                         </template>
                     </tbody>
