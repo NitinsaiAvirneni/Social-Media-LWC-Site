@@ -9,6 +9,7 @@ export default class filterButton extends LightningElement {
 
     platformOptions = [
         { label: 'All Platforms', value: 'Platforms' },
+        {label: 'Google', value: 'google' },
         { label: 'Facebook', value: 'facebook' },
         { label: 'Twitter', value: 'twitter' },
         { label: 'Instagram', value: 'instagram' },
@@ -27,10 +28,13 @@ export default class filterButton extends LightningElement {
     itemOptions = [
         { label: 'All Items', value: 'items' },
         { label: 'Posts', value: 'posts' },
-        { label: 'Reviews', value: 'reviews' }
+        { label: 'Reviews', value: 'reviews' },
+        { label: 'Stories', value: 'stories' },
+        { label: 'Tweets', value: 'tweets' },
+        { label: 'Videos', value: 'videos' }
     ];
 
-  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////on change handlers////////////////////////////////
 
     handleDateChange(event) {
         this.selectedDate = event.detail.value;
@@ -39,6 +43,12 @@ export default class filterButton extends LightningElement {
     handleItemChange(event) {
         this.selectedItem = event.detail.value;
     }
+
+    handlePlatformChange(event) {
+        this.selectedPlatform = event.detail.value; 
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
 
    applyFilter() {
         console.log('Applying filter with:', {
@@ -61,6 +71,9 @@ export default class filterButton extends LightningElement {
         this.searchTerm = event.target.value;
         console.log('Search term:', this.searchTerm);
     }
+
+
+
     resetFilters() {
         this.selectedPlatform = '';
         this.selectedDate = '';

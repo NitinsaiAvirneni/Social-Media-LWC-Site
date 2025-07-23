@@ -95,7 +95,7 @@ public static List<Map<String, Object>> getDataFromContent(Id contentId) {
 
     // Query Social_Media_Interaction__c where the lookup matches the given contentId
     List<Social_Media_Interaction__c> interactions = [
-        SELECT Id, Author_Name__c, Sentiment__c, Urgency_Level__c, Interaction_Text__c, CreatedDate, Response_Date__c,Parent_Interaction_Id__c	
+        SELECT Id, Author_Name__c, Sentiment__c, Urgency_Level__c, Interaction_Text__c, CreatedDate, Response_Date__c,Parent_Interaction_Id__c,Platform_Interaction_Id__c	
         FROM Social_Media_Interaction__c
         WHERE Social_Media_Content__c = :contentId
     ];
@@ -113,6 +113,7 @@ public static List<Map<String, Object>> getDataFromContent(Id contentId) {
             row.put('sentiment', String.isNotBlank(i.Sentiment__c) ? i.Sentiment__c.toLowerCase() : 'No data');
             row.put('message', String.isNotBlank(i.Interaction_Text__c) ? i.Interaction_Text__c : 'No data');
             row.put('parentInteractionId', i.Parent_Interaction_Id__c != null ? i.Parent_Interaction_Id__c : 'No data');
+            row.put('platformInteractionId', i.Platform_Interaction_Id__c != null ? i.Platform_Interaction_Id__c : 'No data');
        
         } else {
             row.put('id', 'No data');

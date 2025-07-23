@@ -58,13 +58,17 @@ export default class DataDisplayTale extends LightningElement {
 
     HandleOnReply(event) {
         const clickedId = event.currentTarget.dataset.id;
+        console.log('61', clickedId);
         this.SMData = this.SMData.map(record => {
             const recordId = record.Id || record.id;
             return {
                 ...record,
                 showReply: recordId === clickedId ? !record.showReply : false
+                
             };
+            
         });
+        
     }
 
     HandleOnLead(event) {
@@ -116,39 +120,26 @@ export default class DataDisplayTale extends LightningElement {
         const recordId = event.currentTarget.dataset.id;
 
         replyInputValues.forEach(function (elementVal) {
-            if (elementVal.name == 'replyField') {
+            if (elementVal.name == event.currentTarget.dataset.contentId) {
                 this.replyText = elementVal.value;
             }
         }, this);
-
-        getSocialMediaContentById({ recordId })
-            .then(result => {
-            // Use new Apex response structure
-            const platformName = result.platform;
-            const commentType = result.contentType;
-            const platfromId = result.platformId;
-           
             
-                sendComment({
-                    id: platfromId,
-                    message: this.replyText,
-                    platformName: platformName,
-                    commentType: commentType
-                })
-                    .then(() => {
-                        this.HandleOnReply(event);
-                        this.replyText = "";
-                        this.showToast('Success', 'Reply sent successfully', 'success');
-                        console.log('Reply sent successfully');
-                    })
-                    .catch(error => {
-                        this.showToast('Error', 'Error sending reply', 'error');
-                        console.error('Error sending reply:', error);
-                    });
+        sendComment({
+            id: event.currentTarget.dataset.contentId,
+            message: this.replyText,
+            platformName: event.currentTarget.dataset.platformName,
+            commentType: "post"
+        })
+            .then(() => {
+                this.HandleOnReply(event);
+                this.replyText = "";
+                this.showToast('Success', 'Reply sent successfully', 'success');
+                console.log('Reply sent successfully');
             })
             .catch(error => {
-                this.showToast('Error', 'Error fetching social media content', 'error');
-                console.error('Error fetching social media content:', error);
+                this.showToast('Error', 'Error sending reply', 'error');
+                console.error('Error sending reply:', error);
             });
     }
 
@@ -161,6 +152,10 @@ export default class DataDisplayTale extends LightningElement {
             })
         );
     }
+
+
+/////////////////////////////filtered DATA Display/////////////////////////////////////////////////////
+    
     get filteredData() {
         // If no filters are selected, return all data
         const hasPlatform = this.selectedPlatform && this.selectedPlatform !== 'Platforms';
@@ -207,10 +202,19 @@ export default class DataDisplayTale extends LightningElement {
             // Item filter
             let itemMatch = true;
             if (hasItem) {
-                if (this.selectedItem === 'posts') {
+              
+                   if (this.selectedItem === 'posts') {
                     itemMatch = item.analysis.contentType.toLowerCase().includes('post');
                 } else if (this.selectedItem === 'reviews') {
                     itemMatch = item.analysis.contentType.toLowerCase().includes('review');
+                } else if (this.selectedItem === 'reels') {
+                    itemMatch = item.analysis.contentType.toLowerCase().includes('reel');
+                } else if (this.selectedItem === 'stories') {
+                    itemMatch = item.analysis.contentType.toLowerCase().includes('story');
+                } else if (this.selectedItem === 'tweets') {
+                    itemMatch = item.analysis.contentType.toLowerCase().includes('tweet');
+                } else if (this.selectedItem === 'videos') {
+                    itemMatch = item.analysis.contentType.toLowerCase().includes('video');
                 }
             }
 
@@ -238,4 +242,7 @@ export default class DataDisplayTale extends LightningElement {
             return platformMatch && dateMatch && itemMatch && searchMatch;
         });
     }
+
+
+    // ///////////////////////////////////DND Filtered data/////////////////////////////////////////////////////
 }

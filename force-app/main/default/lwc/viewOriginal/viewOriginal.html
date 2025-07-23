@@ -2,45 +2,96 @@
     <lightning-card title="Comments and Interactions" icon-name="standard:social">
         <template if:true={hasData}>
             <div style="max-height: 400px; overflow-y: auto; padding: 1rem;">
-                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
-                    <thead>
-                        <tr>
-                            <th>Author</th>
-                            <th>Parent</th>
-                            <th>
+                <template for:each={parentRows} for:item="parent">
+<!--////////////////////////////////////////////////////////////////////////////////////////////////// Parent Comment Card -->
+                    <div key={parent.id} class="parent-comment slds-card slds-p-around_medium slds-m-bottom_medium">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-1">
+                                <strong>{parent.author}</strong>
+                                <span class="slds-text-color_weak slds-m-left_x-small">{parent.date}</span>
+                                <span class="slds-badge slds-m-left_x-small">{parent.sentiment}</span>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-m-top_x-small">
+                                {parent.message}
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-m-top_small">
                                 <lightning-button 
-                                    label="Date" 
-                                    variant="base" 
-                                    onclick={handleSort}
-                                    icon-name="utility:sort"
-                                    class="slds-p-right_xx-small"
+                                    label="Reply" 
+                                    variant="brand" 
+                                    onclick={handleReply} 
+                                    data-id={parent.id}
                                 ></lightning-button>
-                            </th>
-                            <th>Sentiment</th>
-                            <th>Message</th>
-                            <th>Reply</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template for:each={data} for:item="row">
-                            <tr key={row.id}>
-                                <td>{row.author}</td>
-                                <td>{row.date}</td>
-                                <td>{row.parentInteractionId}</td>
-                                <td>{row.sentiment}</td>
-                                <td>{row.message}</td>
-                                <td>
+                            </div>
+
+<!-- ////////////////////////////////////////replay card for parent//////////////////////////////////////////// -->
+                             <template if:true={parent.showParentReply}>
+                                <div>
+                                    <lightning-card>
+                                        <lightning-textarea label="Reply" name={parent.contentId} value={replyText}
+                                            placeholder="reply here..." rows="5"
+                                            class="slds-size_1-of-2"></lightning-textarea>
+                                        <div class="slds-grid slds-wrap slds-m-top_small">
+                                            <lightning-button variant="brand" label="Submit" onclick={onReplyParentSubmit}
+                                                data-id={parent.id} data-content-id={parent.contentId}
+                                                data-platform-name={parent.source}></lightning-button>
+                                            <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
+                                                onclick={onReplyParentCancel} data-id={parent.contentId}></lightning-button>
+                                        </div>
+                                    </lightning-card>
+                                </div>
+                            </template>
+
+
+                            <!-- DND -->
+                        </div>
+                        </div>
+
+
+
+
+
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////Child Comments -->
+                        <template for:each={parent.childRows} for:item="child">
+                            <div key={child.id} class="child-comment slds-p-around_medium slds-m-top_small slds-m-left_x-large slds-theme_shade">
+                                <div>
+                                    <strong>{child.author}</strong>
+                                    <span class="slds-text-color_weak slds-m-left_x-small">{child.date}</span>
+                                    <span class="slds-badge slds-m-left_x-small">{child.sentiment}</span>
+                                </div>
+                                <div class="slds-m-top_x-small">
+                                    {child.message}
+                                </div>
+                                <div class="slds-m-top_small">
                                     <lightning-button 
                                         label="Reply" 
                                         variant="brand" 
                                         onclick={handleReply} 
-                                        data-id={row.id}
+                                        data-id={child.id}
                                     ></lightning-button>
-                                </td>
-                            </tr>
+                                </div>
+<!-- ////////////////////////////////////////replay card for child//////////////////////////////////////////// -->
+   <template if:true={child.showChildReply}>
+                                <div>
+                                    <lightning-card>
+                                        <lightning-textarea label="Reply" name={child.contentId} value={replyText}
+                                            placeholder="reply here..." rows="5"
+                                            class="slds-size_1-of-2"></lightning-textarea>
+                                        <div class="slds-grid slds-wrap slds-m-top_small">
+                                            <lightning-button variant="brand" label="Submit" onclick={onReplyChildSubmit}
+                                                data-id={child.id} data-content-id={child.contentId}
+                                                data-platform-name={parent.source}></lightning-button>
+                                            <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
+                                                onclick={onReplyChildCancel} data-id={child.contentId}></lightning-button>
+                                        </div>
+                                    </lightning-card>
+                                </div>
+                            </template>
+                            <!-- DND -->
+
+                            </div>
                         </template>
-                    </tbody>
-                </table>
+                    </div>
+                </template>
             </div>
         </template>
         <template if:false={hasData}>
