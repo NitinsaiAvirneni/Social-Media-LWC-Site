@@ -1,6 +1,6 @@
+
 import { LightningElement, api, track, wire } from 'lwc';
 import getDataFromAccount from '@salesforce/apex/SocialMediaContentController.getDataFromAccount';
-import getSocialMediaContentById from '@salesforce/apex/SocialMediaContentController.getSocialMediaContentById';
 import sendComment from '@salesforce/apex/SocialMediaContentController.sendComment';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -107,6 +107,21 @@ export default class DataDisplayTale extends LightningElement {
         }
     }
 
+ ///////////////////////////////////////////reply handling/////////////////////////////////////////////////////
+ 
+    // Show toast helper
+    showToast(title, message, variant) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant
+            })
+        )
+    }
+ 
+
+
     /////////////////reply button//////////////////////
     showReplyCard = false;
     replyText = "";
@@ -114,7 +129,7 @@ export default class DataDisplayTale extends LightningElement {
     onReplyCancel(event) {
         this.HandleOnReply(event);
     }
-
+    
     onReplySubmit(event) {
         var replyInputValues = this.template.querySelectorAll("lightning-textarea");
         const recordId = event.currentTarget.dataset.id;
@@ -122,37 +137,29 @@ export default class DataDisplayTale extends LightningElement {
         replyInputValues.forEach(function (elementVal) {
             if (elementVal.name == event.currentTarget.dataset.contentId) {
                 this.replyText = elementVal.value;
+                console.log(this.replyText);
             }
         }, this);
-            
+        
+        console.log(this.replyText);
+        console.log(event.currentTarget.dataset.contentId);
+        console.log(event.currentTarget.dataset.platformName);
+    
         sendComment({
             id: event.currentTarget.dataset.contentId,
             message: this.replyText,
             platformName: event.currentTarget.dataset.platformName,
             commentType: "post"
         })
-            .then(() => {
-                this.HandleOnReply(event);
-                this.replyText = "";
-                this.showToast('Success', 'Reply sent successfully', 'success');
-                console.log('Reply sent successfully');
-            })
-            .catch(error => {
-                this.showToast('Error', 'Error sending reply', 'error');
-                console.error('Error sending reply:', error);
-            });
+        
+        this.HandleOnReply(event);
+        this.replyText = "";
+        this.showToast('Success', 'Reply sent successfully', 'success');
+        console.log('Reply sent successfully');  
     }
 
-    showToast(title, message, variant) {
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: title,
-                message: message,
-                variant: variant,
-            })
-        );
-    }
 
+  
 
 /////////////////////////////filtered DATA Display/////////////////////////////////////////////////////
     
