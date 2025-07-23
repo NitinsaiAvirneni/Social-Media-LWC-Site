@@ -9,6 +9,7 @@
                             <div class="slds-col slds-size_1-of-2">
                                 <strong>{item.author}</strong>
                                 <lightning-badge label={item.source} class="slds-m-left_small"></lightning-badge>
+                                <lightning-badge label={item.contentType} class="slds-m-left_small"></lightning-badge>
                                 <lightning-badge  label={item.id}  class="slds-m-left_small"></lightning-badge>
                                 <!-- <span class="slds-text-color_success slds-m-left_x-small">{item.sentiment}</span> -->
                             </div>
@@ -23,8 +24,10 @@
 
                         <!-- Buttons -->
                         <div class="slds-grid slds-wrap slds-m-bottom_small">
-                            <lightning-button variant="base" label="Reply" class="slds-m-right_small"
-                                onclick={HandleOnReply} data-id={item.id}></lightning-button>
+                            <template if:true={item.allowComment}>
+                                <lightning-button variant="base" label="Reply" class="slds-m-right_small"
+                                    onclick={HandleOnReply} data-id={item.id}></lightning-button>
+                            </template>
                             <lightning-button variant="base" label="View Comments" class="slds-m-right_small"
                                 onclick={HandleOnView} data-id={item.id}></lightning-button>
                             <lightning-button variant="success" label="Convert to Lead" class="slds-m-right_small"
@@ -42,7 +45,7 @@
                                     <lightning-textarea label="Reply" name="replyField" value={replyText} placeholder="reply here..." rows="5"
                                         class="slds-size_1-of-2"></lightning-textarea>
                                     <div class="slds-grid slds-wrap slds-m-top_small">
-                                        <lightning-button variant="brand" label="Submit" onclick={onReplySubmit}></lightning-button>
+                                        <lightning-button variant="brand" label="Submit" onclick={onReplySubmit} data-id={item.id}></lightning-button>
                                         <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
                                             onclick={onReplyCancel} data-id={item.id} ></lightning-button>
                                     </div>
@@ -52,14 +55,14 @@
 
                         <!-- Convert to Lead -->
                             <template if:true={item.showLead}>
-                                <c-convert-lead item-id={selectedLeadItemId} item={item} onmodalclosed={ConvertToLead}>
+                                <c-convert-lead item-id={item.id} lead-data={item} onmodalclosed={ConvertToLead}>
                                 </c-convert-lead>
                             </template>
                    
 
                         <!-- Convert to Case -->
                         <template if:true={item.showCase}>
-                            <c-convert-case item-id={selectedCaseItemId} item={item} onmodalclosed={ConvertTocase}>
+                            <c-convert-case item-id={selectedCaseItemId} case-data={item} onmodalclosed={ConvertTocase}>
                             </c-convert-case>
                         </template>
                 

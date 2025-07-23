@@ -91,12 +91,12 @@ selectChildAccountId(event) {
                 this.childAccounts = result.Children ? result.Children.map(acc => {
                     // Process ContentTypesWithCount to extract individual counts
                     const contentTypes = acc.ContentTypesWithCount || [];
-                    const postObj = contentTypes.find(ct => ct.ContentType === 'post');
-                    const reelObj = contentTypes.find(ct => ct.ContentType === 'reel');
-                    const reviewObj = contentTypes.find(ct => ct.ContentType === 'review');
-                    const storyObj = contentTypes.find(ct => ct.ContentType === 'story');
-                    const tweetObj = contentTypes.find(ct => ct.ContentType === 'tweet');
-                    const videoObj = contentTypes.find(ct => ct.ContentType === 'video');
+                    const postObj = contentTypes.find(ct => ct.ContentType === 'Post');
+                    const reelObj = contentTypes.find(ct => ct.ContentType === 'Reel');
+                    const reviewObj = contentTypes.find(ct => ct.ContentType === 'Review');
+                    const storyObj = contentTypes.find(ct => ct.ContentType === 'Story');
+                    const tweetObj = contentTypes.find(ct => ct.ContentType === 'Tweet');
+                    const videoObj = contentTypes.find(ct => ct.ContentType === 'Video');
 
                     return {
                         Id: acc.Id,

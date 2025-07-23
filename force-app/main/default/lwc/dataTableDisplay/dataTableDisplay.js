@@ -1,186 +1,166 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getDataFromAccount from '@salesforce/apex/SocialMediaContentController.getDataFromAccount';
+import getSocialMediaContentById from '@salesforce/apex/SocialMediaContentController.getSocialMediaContentById';
+import sendComment from '@salesforce/apex/SocialMediaContentController.sendComment';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class DataDisplayTale extends LightningElement {
-    /////////////////////////varaiabel from chile to parent to child/////////////////////////////////////////////////////
+    /////////////////////////variables from child to parent to child/////////////////////////////////////////////////////
     @api selectedPlatform = '';
     @api selectedDate = '';
     @api selectedItem = '';
     @api searchTerm = '';
     @api custombuttonPlatform = '';
     @api subaccountId; // Account Id
-    @api showAnalyis;/////////////Show AI Analysis
+    @api showAnalyis; // Show AI Analysis
+
     //////////////////////track variables/////////////////////////////////////////////////////
     @track SMData = []; // Social Media Data
 
     /////////////////////////////////////////show only to select table variables
-
     @track selectedLeadItemId; // Track selected lead item ID
     @track selectedCaseItemId; // Track selected case item ID
     @track selectedViewOriginalId; // Track selected item ID for view original
 
-
-test(event){
-console.log("this is ",event.item.id)
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  @wire(getDataFromAccount, { accountId: '$subaccountId' })
-wiredData({ error, data }) {
-    if (data) {
-        this.SMData = data.map(record => ({
-            ...record,
-            showChild: false,
-            showReply: false, // Initialize showReply to false
-            showCase: false, // Initialize showCase to false
-            showLead: false // Initialize showLead to false
-
-        }));
-        console.log('Fetched SMData:', JSON.stringify(this.SMData, null, 2));
-    } else if (error) {
-        console.error('Error fetching SMData:', error);
+    test(event) {
+        console.log("this is ", event.item.id);
     }
-}
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @wire(getDataFromAccount, { accountId: '$subaccountId' })
+    wiredData({ error, data }) {
+        if (data) {
+            this.SMData = data.map(record => ({
+                ...record,
+                allowComment: (record.source === 'Facebook' || record.source === 'Instagram')?true:false,
+                showChild: false,
+                showReply: false,
+                showCase: false,
+                showLead: false
+            }));
+            console.log('Fetched SMData:', JSON.stringify(this.SMData, null, 2));
+        } else if (error) {
+            console.error('Error fetching SMData:', error);
+            this.showToast('Error', 'Error fetching social media data', 'error');
+        }
+    }
 
-HandleOnView(event) {
-    const clickedId = event.currentTarget.dataset.id;
-    this.SMData = this.SMData.map(record => {
-        // Check if record has 'Id' or 'id' property
-        const recordId = record.Id || record.id;
-        return {
-            ...record,
-            showChild: recordId === clickedId ? !record.showChild : false
-        };
-    });
-  
-}
+    HandleOnView(event) {
+        const clickedId = event.currentTarget.dataset.id;
+        this.SMData = this.SMData.map(record => {
+            const recordId = record.Id || record.id;
+            return {
+                ...record,
+                showChild: recordId === clickedId ? !record.showChild : false
+            };
+        });
+    }
 
+    HandleOnReply(event) {
+        const clickedId = event.currentTarget.dataset.id;
+        this.SMData = this.SMData.map(record => {
+            const recordId = record.Id || record.id;
+            return {
+                ...record,
+                showReply: recordId === clickedId ? !record.showReply : false
+            };
+        });
+    }
 
-HandleOnReply(event) {
-    const clickedId = event.currentTarget.dataset.id;
-    this.SMData = this.SMData.map(record => {
-        // Check if record has 'Id' or 'id' property
-        const recordId = record.Id || record.id;
-        return {
-            ...record,
-            showReply: recordId === clickedId ? !record.showReply : false
-        };
-    });
-  
-}
+    HandleOnLead(event) {
+        const clickedId = event.currentTarget.dataset.id;
+        this.SMData = this.SMData.map(record => {
+            const recordId = record.Id || record.id;
+            return {
+                ...record,
+                showLead: recordId === clickedId ? !record.showLead : false
+            };
+        });
+    }
 
-HandleOnLead(event) {
-    const clickedId = event.currentTarget.dataset.id;
+    /////////////////////////////convert to lead/////////////////////////////////////////////////////
+    ConvertToLead(event) {
+        if (event.detail === false) {
+            this.HandleOnLead(event);
+        }
+    }
 
-    this.SMData = this.SMData.map(record => {
-        // Check if record has 'Id' or 'id' property
-        const recordId = record.Id || record.id;
-        return {
-            ...record,
-            showLead: recordId === clickedId ? !record.showLead : false
-        };
-    });
-  
-}
+    HandleOnCase(event) {
+        const clickedId = event.currentTarget.dataset.id;
+        this.SMData = this.SMData.map(record => {
+            const recordId = record.Id || record.id;
+            return {
+                ...record,
+                showCase: recordId === clickedId ? !record.showCase : false
+            };
+        });
+    }
 
-HandleOnCase(event) {
-    const clickedId = event.currentTarget.dataset.id;
-
-    this.SMData = this.SMData.map(record => {
-        // Check if record has 'Id' or 'id' property
-        const recordId = record.Id || record.id;
-        return {
-            ...record,
-            showCase: recordId === clickedId ? !record.showCase : false
-        };
-    });
-  
-}
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///close child component from parent
+    ConvertTocase(event) {
+        if (event.detail === false) {
+            this.HandleOnCase(event);
+        }
+    }
 
     /////////////////reply button//////////////////////
     showReplyCard = false;
-    replyText = ""; 
-
-
+    replyText = "";
 
     onReplyCancel(event) {
         this.HandleOnReply(event);
     }
 
-    onReplySubmit() {
+    onReplySubmit(event) {
         var replyInputValues = this.template.querySelectorAll("lightning-textarea");
+        const recordId = event.currentTarget.dataset.id;
 
         replyInputValues.forEach(function (elementVal) {
             if (elementVal.name == 'replyField') {
                 this.replyText = elementVal.value;
-            } 
+            }
         }, this);
 
-        console.log("this is reply text",this.replyText)
-        this.showReplyCard = !this.showReplyCard;
+        getSocialMediaContentById({ recordId })
+            .then(result => {
+            // Use new Apex response structure
+            const platformName = result.platform;
+            const commentType = result.contentType;
+            const platfromId = result.platformId;
+           
+            
+                sendComment({
+                    id: platfromId,
+                    message: this.replyText,
+                    platformName: platformName,
+                    commentType: commentType
+                })
+                    .then(() => {
+                        this.HandleOnReply(event);
+                        this.replyText = "";
+                        this.showToast('Success', 'Reply sent successfully', 'success');
+                        console.log('Reply sent successfully');
+                    })
+                    .catch(error => {
+                        this.showToast('Error', 'Error sending reply', 'error');
+                        console.error('Error sending reply:', error);
+                    });
+            })
+            .catch(error => {
+                this.showToast('Error', 'Error fetching social media content', 'error');
+                console.error('Error fetching social media content:', error);
+            });
     }
 
-    /////////////////////////////convert to lead/////////////////////////////////////////////////////
-
-    showconverttoLead = false;
-
-    onclickedshowconverttoLead(event) {
-        this.showconverttoLead = !this.showconverttoLead; // Toggle showconverttoLead
-        
-        this.selectedLeadItemId = event.target.dataset.id; // Use event.detail for -parent to child communication
+    showToast(title, message, variant) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant,
+            })
+        );
     }
-
-    ConvertToLead(event) {
-        if (event.detail === false) { // this event is from child to parent
-            this.showconverttoLead = false; // Reset if false
-        }
-        // Optionally, you can handle selectedLeadItemId here if needed
-        return this.showconverttoLead; // Return current state
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    showconverttocase = false;
-
-
-    /////////////////ConvertToCase//////////////////////
-    onclickedshowconverttoCase(event) {
-        this.showconverttocase = !this.showconverttocase; // Toggle showconverttoLead
-        this.selectedLeadItemId = event.target.dataset.id; // Use event.detail for -parent to child communication
-    }
-    ///////button to on/off child component
-
-    ///close child component from parent
-    ConvertTocase(event) {
-        if (event.detail === false) { // this event is from child to parent
-            this.showconverttocase = false; // Reset if false
-        }
-        // Optionally, you can handle selectedLeadItemId here if needed
-        return this.showconverttocase; // Return current state
-    }
-
-
-
-    ///////////////////////////////////////////View Origninals//////////////////////////////////////////////////////////////////////////
-
-    showViewOriginal = false;
-    ViewOriginal(event) {
-        this.showViewOriginal = !this.showViewOriginal; // Toggle showViewOriginal
-        this.selectedViewOriginalId = event.target.dataset.id; // Use event.detail for -parent to child communication
-      
-    }
-
-    
-
-
-    //////////////////////to get data from apex class actively @wire/////////////////////////////////////////////////////
-   
-
-
-
-    ////////////to filter data based on selected platform/////////////////////////////////////////////////////
     get filteredData() {
         // If no filters are selected, return all data
         const hasPlatform = this.selectedPlatform && this.selectedPlatform !== 'Platforms';
@@ -258,5 +238,4 @@ HandleOnCase(event) {
             return platformMatch && dateMatch && itemMatch && searchMatch;
         });
     }
-
 }

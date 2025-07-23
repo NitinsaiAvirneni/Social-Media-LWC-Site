@@ -4,7 +4,8 @@
     color: #fff;
     border-radius: 14px;
     box-shadow: 0 4px 16px rgba(79, 142, 247, 0.15);
-    padding: 16px 50px;;
+    padding: 16px 50px;
+    ;
     margin-bottom: 32px;
 }
 
@@ -15,6 +16,7 @@
     letter-spacing: 1px;
     margin: 0;
 }
+
 /* action items css */
 
 .actionButtonAnalytics {
@@ -36,4 +38,19 @@
     cursor: pointer;
     transition: background 0.2s;
 }
+
 /* Action items css DND */
+
+
+.sync-button {
+    transition: background 0.2s, box-shadow 0.2s;
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.sync-button:hover {
+    background: #f7f7f7;
+    color: black;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

@@ -2,7 +2,7 @@ import { LightningElement, api, wire } from 'lwc';
 import getDataFromContent from '@salesforce/apex/SocialMediaContentController.getDataFromContent';
 
 export default class ViewOriginal extends LightningElement {
-    @api v ; // Set this dynamically as needed
+    @api contentId ; // Set this dynamically as needed
     data = [];
     error;
 
@@ -18,6 +18,7 @@ export default class ViewOriginal extends LightningElement {
     }
 
     get hasData() {
+        console.log('Data:', this.data);
         return this.data && this.data.length > 0;
     }
 }

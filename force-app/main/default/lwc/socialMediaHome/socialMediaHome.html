@@ -20,11 +20,11 @@
                 <div class="header-actions" style="display: flex; flex-direction: column; align-items: flex-end;">
                     <div class="actions" style="display: flex; gap: 19.2px;">
 
-                        <lightning-button 
-                            label="Sync" 
-                            onclick={openParentModal} 
-                            class="slds-m-around_medium">
-                        </lightning-button>
+                        <div class="action-item actionButtonSchedule sync-button" onclick={openParentModal}>
+                            <lightning-icon icon-name="utility:settings" alternative-text="Sync" size="small"
+                                style="margin-right: 8px;"></lightning-icon>
+                            <span style="font-weight: 500;">Sync</span>
+                        </div>
                        
                            <!-- version 2.0 update later  -->
                        

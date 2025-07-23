@@ -30,29 +30,29 @@ setchildaccountid(event) {
     }
 
 // this is a test function to check the analytics of the social media site                   ///these are for buttons in the header
-openParentModal() {
-        this.showParentModal = true;
-        this.showToast('Info', 'Batch class is running...');
-        runSocialMediaSync()
-        .then(() => {
-                console.log('Social media sync completed');
-            })
-            .catch(error => {
-                console.error('Error syncing:', error);
-            });
-
-        // Use setTimeout to wait for modal DOM to render
-        setTimeout(() => this.loadParentChart(), 0);
+async openParentModal() {
+    this.showParentModal = true;
+    this.showToast('Info', 'Batch class is running...', 'info');
+    try {
+        await runSocialMediaSync();
+        console.log('Social media sync completed');
+        this.showToast('Success', 'Social media sync completed!', 'success');
+    } catch (error) {
+        console.error('Error syncing:', error);
+        this.showToast('Error', 'Error syncing: ' + (error.body?.message || error.message), 'error');
     }
+    // Wait for modal DOM to render before loading chart
+    setTimeout(() => this.loadParentChart(), 0);
+}
 
- showToast(title, message, variant) {
-        const evt = new ShowToastEvent({
-            title: title,
-            message: message,
-            variant: variant
-        });
-        this.dispatchEvent(evt);
-    }
+showToast(title, message, variant = 'info') {
+    const evt = new ShowToastEvent({
+        title,
+        message,
+        variant
+    });
+    this.dispatchEvent(evt);
+}
 
 testSchedule(){
     console.log('Social Media Site Test Schedule');
