@@ -1,4 +1,3 @@
-
 import { LightningElement, api, track, wire } from 'lwc';
 import getDataFromAccount from '@salesforce/apex/SocialMediaContentController.getDataFromAccount';
 import sendComment from '@salesforce/apex/SocialMediaContentController.sendComment';
@@ -144,18 +143,22 @@ export default class DataDisplayTale extends LightningElement {
         console.log(this.replyText);
         console.log(event.currentTarget.dataset.contentId);
         console.log(event.currentTarget.dataset.platformName);
-    
-        sendComment({
-            id: event.currentTarget.dataset.contentId,
-            message: this.replyText,
-            platformName: event.currentTarget.dataset.platformName,
-            commentType: "post"
-        })
         
-        this.HandleOnReply(event);
-        this.replyText = "";
-        this.showToast('Success', 'Reply sent successfully', 'success');
-        console.log('Reply sent successfully');  
+        if (this.replyText == "") {
+            this.showToast('Error', 'Please enter a reply', 'error');
+        } else {
+            sendComment({
+                id: event.currentTarget.dataset.contentId,
+                message: this.replyText,
+                platformName: event.currentTarget.dataset.platformName,
+                commentType: "post"
+            })
+        
+            this.HandleOnReply(event);
+            this.replyText = "";
+            this.showToast('Success', 'Reply sent successfully', 'success');
+            console.log('Reply sent successfully');   
+        }  
     }
 
 

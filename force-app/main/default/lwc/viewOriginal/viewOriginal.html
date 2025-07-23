@@ -18,7 +18,7 @@
                                 <lightning-button 
                                     label="Reply" 
                                     variant="brand" 
-                                    onclick={handleReply} 
+                                    onclick={HandleOnParentReply} 
                                     data-id={parent.id}
                                 ></lightning-button>
                             </div>
@@ -62,31 +62,10 @@
                                     {child.message}
                                 </div>
                                 <div class="slds-m-top_small">
-                                    <lightning-button 
-                                        label="Reply" 
-                                        variant="brand" 
-                                        onclick={handleReply} 
-                                        data-id={child.id}
-                                    ></lightning-button>
+                                   
                                 </div>
 <!-- ////////////////////////////////////////replay card for child//////////////////////////////////////////// -->
-   <template if:true={child.showChildReply}>
-                                <div>
-                                    <lightning-card>
-                                        <lightning-textarea label="Reply" name={child.contentId} value={replyText}
-                                            placeholder="reply here..." rows="5"
-                                            class="slds-size_1-of-2"></lightning-textarea>
-                                        <div class="slds-grid slds-wrap slds-m-top_small">
-                                            <lightning-button variant="brand" label="Submit" onclick={onReplyChildSubmit}
-                                                data-id={child.id} data-content-id={child.contentId}
-                                                data-platform-name={parent.source}></lightning-button>
-                                            <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
-                                                onclick={onReplyChildCancel} data-id={child.contentId}></lightning-button>
-                                        </div>
-                                    </lightning-card>
-                                </div>
-                            </template>
-                            <!-- DND -->
+
 
                             </div>
                         </template>

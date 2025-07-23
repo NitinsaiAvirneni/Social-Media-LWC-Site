@@ -12,7 +12,6 @@ export default class ViewOriginal extends LightningElement {
             this.data = data.map(record => ({
                 ...record,
                 showParentReply: false,///extra variable to track parent reply visibility to data
-                showChildReply: false//extra variable to track child reply visibility
             }));
             this.error = undefined;
         } else if (error) {
@@ -36,21 +35,7 @@ HandleOnParentReply(event) {
         });
         
     }
-/////////////////////////child reply handling/////////////////////////////////////////////////////
-    HandleOnChildReply(event) {
-        const clickedId = event.currentTarget.dataset.id;
-        console.log('child', clickedId);
-        this.data = this.data.map(record => {
-            const recordId = record.Id || record.id;
-            return {
-                ...record,
-                showChildReply: recordId === clickedId ? !record.showChildReply : false
-                
-            };
-            
-        });
-        
-    }
+
 
     //////////////////////////////////onclick handlers for reply and cancel/////////////////////////////////////////////////////
 
