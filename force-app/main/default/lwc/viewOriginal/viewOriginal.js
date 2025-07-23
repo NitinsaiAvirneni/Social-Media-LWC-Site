@@ -1,5 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import getDataFromContent from '@salesforce/apex/SocialMediaContentController.getDataFromContent';
+import sendComment from '@salesforce/apex/SocialMediaContentController.sendComment';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class ViewOriginal extends LightningElement {
     @api contentId;
@@ -20,11 +22,10 @@ export default class ViewOriginal extends LightningElement {
         }
     }
 
-////////////////////////parent reply handling/////////////////////////////////////////////////////
+////////////////////////parent on  reply handling/////////////////////////////////////////////////////
 HandleOnParentReply(event) {
         const clickedId = event.currentTarget.dataset.id;
-        console.log('parent', clickedId);
-        this.data = this.data.map(record => {
+        this.data = this.data.map(record => {                                   ///button on off
             const recordId = record.Id || record.id;
             return {
                 ...record,
@@ -37,10 +38,103 @@ HandleOnParentReply(event) {
     }
 
 
-    //////////////////////////////////onclick handlers for reply and cancel/////////////////////////////////////////////////////
+    //////////////////////////////////onclick handlers for cancel/////////////////////////////////////////////////////
 
 
+onReplyParentCancel(event) {
+    this.data = this.data.map(record => {
+        return {
+            ...record,
+            showParentReply: false
+        };
+    });
+}
 
+
+    ////////////////////////////////////////reply handling/////////////////////////////////////////////////////
+//      replyText = "";
+//  onReplyParentSubmit(event) {
+//     console.log('Reply submitted for content ID:', event.currentTarget.dataset.platformInteractionId);
+//         var replyInputValues = this.template.querySelectorAll("lightning-textarea");
+
+//         replyInputValues.forEach(function (elementVal) {
+//             if (elementVal.name == event.currentTarget.dataset.platformInteractionId) {
+//                 this.replyText = elementVal.value;
+//                 console.log(this.replyText);
+//             }
+//         }, this);
+
+       
+        
+//         if (this.replyText == "") {
+//             this.showToast('Error', 'Please enter a reply', 'error');
+//         } else {
+//             sendComment({
+//                 id: event.currentTarget.dataset.platformInteractionId,
+//                 message: this.replyText,
+//                 platformName: event.currentTarget.dataset.platform,
+//                 commentType: "comment"
+//             })
+        
+//             this.HandleOnParentReply(event);
+//             this.replyText = "";
+//             this.showToast('Success', 'Reply sent successfully', 'success');
+//             console.log('Reply sent successfully');   
+//         }  
+//     }
+
+
+replyText = "";
+
+async onReplyParentSubmit(event) {
+    console.log('Reply submitted for content ID:', JSON.stringify(event.target.dataset));
+    
+    const parentId = event.currentTarget.dataset.contentId;
+    const platformName = event.currentTarget.dataset.platform;
+    console.log('Reply submitted for content ID:', parentId, 'on platform:', platformName);
+
+    const replyInputValues = this.template.querySelectorAll("lightning-textarea");
+    replyInputValues.forEach((elementVal) => {
+        if (elementVal.name == event.currentTarget.dataset.platformInteractionId) {
+            this.replyText = elementVal.value;
+            console.log('Reply text:', this.replyText);
+        }
+    });
+
+  
+
+    if (!this.replyText || this.replyText.trim() === "") {
+        console.warn('No reply entered');
+        this.showToast('Error', 'Please enter a reply', 'error');
+        return;
+    }
+
+    try {
+        await sendComment({
+            id: parentId,
+            message: this.replyText,
+            platformName: platformName,
+            commentType: "comment"
+        });
+        this.HandleOnParentReply(event);
+        this.replyText = "";
+        this.showToast('Success', 'Reply sent successfully', 'success');
+        console.log('Reply sent successfully');
+    } catch (error) {
+        console.error('Error sending reply:', error);
+        this.showToast('Error', 'Failed to send reply', 'error');
+    }
+}
+showToast(title, message, variant) {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: message,
+                variant: variant,
+            })
+        );
+    }
+    ///////////////////////////////////////////////////////////////////////////////////
 
     get hasData() {
         return this.data && this.data.length > 0;
@@ -67,10 +161,6 @@ HandleOnParentReply(event) {
 
     handleReply(event) {
         const commentId = event.target.dataset.id;
-        // Implement your reply logic here, e.g., open a modal or fire an event
-        // Example:
-        // this.dispatchEvent(new CustomEvent('reply', { detail: { commentId } }));
-        // For now, just log:
-        console.log('Reply to:', commentId);
+      
     }
 }

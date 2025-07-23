@@ -12,7 +12,7 @@
                                 <span class="slds-badge slds-m-left_x-small">{parent.sentiment}</span>
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-m-top_x-small">
-                                {parent.message}
+                                {parent.message}  {parent.platformInteractionId} {parent.platform}
                             </div>
                             <div class="slds-col slds-size_1-of-1 slds-m-top_small">
                                 <lightning-button 
@@ -20,10 +20,14 @@
                                     variant="brand" 
                                     onclick={HandleOnParentReply} 
                                     data-id={parent.id}
+                                    data-content-id={parent.platformInteractionId}
+                                    data-platform={parent.platform}>
                                 ></lightning-button>
                             </div>
 
-<!-- ////////////////////////////////////////replay card for parent//////////////////////////////////////////// -->
+                        </div>
+
+                        <!-- ////////////////////////////////////////replay card for parent//////////////////////////////////////////// -->
                              <template if:true={parent.showParentReply}>
                                 <div>
                                     <lightning-card>
@@ -32,8 +36,8 @@
                                             class="slds-size_1-of-2"></lightning-textarea>
                                         <div class="slds-grid slds-wrap slds-m-top_small">
                                             <lightning-button variant="brand" label="Submit" onclick={onReplyParentSubmit}
-                                                data-id={parent.id} data-content-id={parent.contentId}
-                                                data-platform-name={parent.source}></lightning-button>
+                                                data-id={parent.id} data-content-id={parent.platformInteractionId}
+                                                data-platform={parent.platform}></lightning-button>
                                             <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
                                                 onclick={onReplyParentCancel} data-id={parent.contentId}></lightning-button>
                                         </div>
@@ -43,8 +47,12 @@
 
 
                             <!-- DND -->
-                        </div>
-                        </div>
+
+
+ 
+                    </div>
+
+                                               
 
 
 
