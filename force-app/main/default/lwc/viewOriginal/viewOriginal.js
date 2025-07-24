@@ -87,7 +87,7 @@ onReplyParentCancel(event) {
 replyText = "";
 
 async onReplyParentSubmit(event) {
-    console.log('Reply submitted for content ID:', JSON.stringify(event.target.dataset));
+    console.log('Reply submitted for content ID:', JSON.stringify(event.target.dataset.id));
     
     const parentId = event.currentTarget.dataset.contentId;
     const platformName = event.currentTarget.dataset.platform;
@@ -95,7 +95,9 @@ async onReplyParentSubmit(event) {
 
     const replyInputValues = this.template.querySelectorAll("lightning-textarea");
     replyInputValues.forEach((elementVal) => {
-        if (elementVal.name == event.currentTarget.dataset.platformInteractionId) {
+        console.log('Element name:', elementVal.name, 'Value:', event.currentTarget.dataset.contentId);
+        
+        if (elementVal.name == event.currentTarget.dataset.contentId) {
             this.replyText = elementVal.value;
             console.log('Reply text:', this.replyText);
         }
@@ -116,6 +118,7 @@ async onReplyParentSubmit(event) {
             platformName: platformName,
             commentType: "comment"
         });
+
         this.HandleOnParentReply(event);
         this.replyText = "";
         this.showToast('Success', 'Reply sent successfully', 'success');
