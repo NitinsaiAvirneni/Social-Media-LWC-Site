@@ -111,22 +111,24 @@ async onReplyParentSubmit(event) {
         return;
     }
 
-    try {
-        await sendComment({
-            id: parentId,
-            message: this.replyText,
-            platformName: platformName,
-            commentType: "comment"
-        });
-
+    sendComment({
+        id: parentId,
+        message: this.replyText,
+        platformName: platformName,
+        commentType: "comment"
+    })
+    .then(() => {
+        // this.HandleOnParentReply(event);
         this.HandleOnParentReply(event);
+
         this.replyText = "";
         this.showToast('Success', 'Reply sent successfully', 'success');
         console.log('Reply sent successfully');
-    } catch (error) {
+    })
+    .catch(error => {
         console.error('Error sending reply:', error);
         this.showToast('Error', 'Failed to send reply', 'error');
-    }
+    });
 }
 showToast(title, message, variant) {
         this.dispatchEvent(
