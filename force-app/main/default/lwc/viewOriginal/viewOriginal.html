@@ -35,9 +35,8 @@
                                             placeholder="reply here..." rows="5"
                                             class="slds-size_1-of-2"></lightning-textarea>
                                         <div class="slds-grid slds-wrap slds-m-top_small">
-                                            <lightning-button variant="brand" label="Submit" onclick={onReplyParentSubmit}
-                                                data-id={parent.id} data-content-id={parent.platformInteractionId}
-                                                data-platform={parent.platform}></lightning-button>
+                    
+                                                <lightning-button variant="brand" label="Submit" class="slds-m-left_small" onclick={onReplyParentSubmit} data-id={parent.id} data-content-id={parent.platformInteractionId} data-platform={parent.platform}></lightning-button>
                                             <lightning-button variant="neutral" label="Cancel" class="slds-m-left_small"
                                                 onclick={onReplyParentCancel} data-id={parent.contentId}></lightning-button>
                                         </div>

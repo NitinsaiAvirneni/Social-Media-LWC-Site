@@ -25,6 +25,8 @@ export default class ViewOriginal extends LightningElement {
 ////////////////////////parent on  reply handling/////////////////////////////////////////////////////
 HandleOnParentReply(event) {
         const clickedId = event.currentTarget.dataset.id;
+        console.log('Clicked ID:', clickedId);
+        console.log('Data before toggle:', JSON.stringify(this.data, null, 2));
         this.data = this.data.map(record => {                                   ///button on off
             const recordId = record.Id || record.id;
             return {
@@ -86,16 +88,24 @@ onReplyParentCancel(event) {
 
 replyText = "";
 
+test(event) {
+    console.log('Test button clicked');
+    console.log('dataset data', JSON.stringify(event.target.dataset));
+    console.log('Reply submitted for content ID:', event.currentTarget.dataset.id);
+
+    console.log('Reply submitted for content ID:', parentId, 'on platform:', platformName);
+    console.log('Element name:', elementVal.name, 'Value:', event.currentTarget.dataset.contentId);
+}
+
 async onReplyParentSubmit(event) {
-    console.log('Reply submitted for content ID:', JSON.stringify(event.target.dataset.id));
     
     const parentId = event.currentTarget.dataset.contentId;
     const platformName = event.currentTarget.dataset.platform;
-    console.log('Reply submitted for content ID:', parentId, 'on platform:', platformName);
+    
 
     const replyInputValues = this.template.querySelectorAll("lightning-textarea");
     replyInputValues.forEach((elementVal) => {
-        console.log('Element name:', elementVal.name, 'Value:', event.currentTarget.dataset.contentId);
+        
         
         if (elementVal.name == event.currentTarget.dataset.contentId) {
             this.replyText = elementVal.value;
@@ -111,24 +121,43 @@ async onReplyParentSubmit(event) {
         return;
     }
 
-    sendComment({
-        id: parentId,
-        message: this.replyText,
-        platformName: platformName,
-        commentType: "comment"
-    })
-    .then(() => {
-        // this.HandleOnParentReply(event);
-        this.HandleOnParentReply(event);
+ 
 
+    try {
+        await sendComment({
+            id: parentId,
+            message: this.replyText,
+            platformName: platformName,
+            commentType: "comment"
+        });
+        try{
+        // Ensure event.currentTarget.dataset is populated correctly
+        // If not, try event.target.dataset as a fallback
+        const dataset = event.currentTarget?.dataset && Object.keys(event.currentTarget.dataset).length > 0
+            ? event.currentTarget.dataset
+            : event.target?.dataset || {};
+
+        // Log dataset for debugging
+        console.log('Dataset used for HandleOnParentReply:', dataset);
+
+        // Create a synthetic event with the correct dataset if needed
+        const syntheticEvent = {
+            currentTarget: {
+            dataset: dataset
+            }
+        };
+
+        this.HandleOnParentReply(syntheticEvent);}
+        catch(error){
+            console.error('Error handling parent reply:', error);
+        }
         this.replyText = "";
         this.showToast('Success', 'Reply sent successfully', 'success');
         console.log('Reply sent successfully');
-    })
-    .catch(error => {
+    } catch (error) {
         console.error('Error sending reply:', error);
         this.showToast('Error', 'Failed to send reply', 'error');
-    });
+    }
 }
 showToast(title, message, variant) {
         this.dispatchEvent(
